@@ -19,12 +19,34 @@ in
   home.homeDirectory = "/home/klee";
   home.stateVersion = "24.11";
   home.packages = with pkgs; [
-    # DevOps Tools
-    git curl wget kubectl kubernetes-helm k9s awscli2 google-cloud-sdk
-    direnv vscode-fhs kitty terraform
-    #user app
-    localsend  google-chrome  qq opencode splayer
-    # UI Components from ilyamiro
+    # --- DevOps & Infrastructure ---
+    opentofu                # Terraform 的开源替代品，网速更快更友好
+    ansible                 # 配置管理必备
+    kubectl kubernetes-helm k9s
+    awscli2 google-cloud-sdk
+    
+    # --- Containers ---
+    podman-compose          # 多容器编排学习
+    
+    # --- Automation & Data ---
+    jq yq-go                # JSON/YAML 处理专家
+    gh                      # GitHub 命令行工具
+    python3Full             # 运维脚本核心
+    
+    # --- Development & DX ---
+    git curl wget direnv
+    go                      # Go 语言环境
+    vscode-fhs kitty
+    
+    # --- Networking & Debug ---
+    bind.dnsutils           # dig, nslookup
+    mtr                     # 更好的 traceroute
+    nmap                    # 端口扫描与审计
+    
+    # --- User Apps ---
+    localsend google-chrome qq opencode splayer
+    
+    # --- UI Components ---
     adwaita-icon-theme adw-gtk3 jetbrains-mono nerd-fonts.jetbrains-mono
     inter noto-fonts-cjk-sans bibata-cursors papirus-icon-theme
   ];
@@ -102,9 +124,31 @@ in
     enableZshIntegration = true;
   };
 
+  # 别名映射：将 terraform 指向 tofu，将 docker 映射到 podman (通过 zsh 确保交互式体验)
+  programs.zsh = {
+    enable = true;
+    shellAliases = {
+      # IaC 转换
+      terraform = "tofu";
+      tf = "tofu";
+      # 容器转换 (虽然系统已经有兼容，但 Zsh 别名能让 tab 补全更顺畅)
+      docker = "podman";
+      "docker-compose" = "podman-compose";
+      # Go 常用
+      gmod = "go mod tidy";
+      gr = "go run";
+    };
+  };
+
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
+  };
+
+  # 设置 Go 语言相关的环境变量，特别是在国内开发需要代理
+  home.sessionVariables = {
+    GOPROXY = "https://goproxy.cn,direct";
+    GOSUMDB = "sum.golang.google.cn";
   };
 
   programs.home-manager.enable = true;
