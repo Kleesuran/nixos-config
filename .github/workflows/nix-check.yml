@@ -15,11 +15,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@v9
+        uses: DeterminateSystems/nix-installer-action@v14
 
       - name: Magic Nix Cache
         # 自动缓存已下载的 Nix 包，大幅提高后续运行速度
-        uses: DeterminateSystems/magic-nix-cache-action@v2
+        uses: DeterminateSystems/magic-nix-cache-action@v7
 
       - name: Check Flake Metadata
         # 验证 flake.nix 语法、inputs 是否能正确拉取（包括 nvim-config）
