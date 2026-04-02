@@ -15,9 +15,15 @@
       url = "github:Kleesuran/my-nvim-devops-config";
       flake = false;
     };
+
+    # ilyamiro's rice - 引用作为主题源
+    ilyamiro-config = {
+      url = "github:ilyamiro/nixos-configuration";
+      flake = false;
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, nvim-config, ... }:
+  outputs = { self, nixpkgs, home-manager, nvim-config, ilyamiro-config, ... }:
   let
     system = "x86_64-linux";
   in {
@@ -32,7 +38,7 @@
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = { inherit nvim-config; };
+          home-manager.extraSpecialArgs = { inherit nvim-config ilyamiro-config; };
           home-manager.users.klee = import ./home/klee.nix;
         }
       ];

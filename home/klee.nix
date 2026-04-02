@@ -1,8 +1,7 @@
-{ config, pkgs, nvim-config, ... }:
+{ config, pkgs, nvim-config, ilyamiro-config, ... }:
 
 let
-  # 程序的相对路径，注意在 Flake 结构中，home 目录位于 ./home/，而 config 位于 ./config/
-  # 因此从 ./home/klee.nix 引用 config 应该用 ../config/
+  # 这里的 programImports 逻辑可以保留，用于加载本地定义
   programsDir = ../config/programs;
   files = builtins.readDir programsDir;
   directories = builtins.filter 
@@ -12,12 +11,26 @@ let
 in
 {
   imports = [
-    ../config/sessions/hyprland/default.nix
+    # 核心：直接引用 ilyamiro 的桌面环境配置作为基础，实现自动同步
+    (ilyamiro-config + "/config/sessions/hyprland/default.nix")
   ] ++ programImports; 
 
   home.username = "klee";
   home.homeDirectory = "/home/klee";
   home.stateVersion = "24.11";
+
+  # ilyamiro's Rice 核心组件引用
+  # 我们直接将远程仓库的 config 映射到本地，确保配置是最新的且完整的
+  xdg.configFile = {
+    "matugen".source = ilyamiro-config + "/config/programs/matugen";
+    "swaync".source = ilyamiro-config + "/config/programs/swaync";
+    "swayosd".source = ilyamiro-config + "/config/programs/swayosd";
+    "waybar".source = ilyamiro-config + "/config/programs/waybar";
+    "cava".source = ilyamiro-config + "/config/programs/cava";
+    "rofi".source = ilyamiro-config + "/config/programs/rofi";
+    "kitty".source = ilyamiro-config + "/config/programs/kitty";
+  };
+
   home.packages = with pkgs; [
     # --- DevOps & Infrastructure ---
     opentofu                # Terraform 的开源替代品，网速更快更友好
@@ -31,7 +44,7 @@ in
     # --- Automation & Data ---
     jq yq-go                # JSON/YAML 处理专家
     gh                      # GitHub 命令行工具
-    python3Full             # 运维脚本核心
+    python3                 # 运维脚本核心 (已从 python3Full 更名)
     
     # --- Development & DX ---
     git curl wget direnv
@@ -46,9 +59,19 @@ in
     # --- User Apps ---
     localsend google-chrome qq opencode splayer
     
-    # --- UI Components ---
+    # --- UI Components from ilyamiro ---
     adwaita-icon-theme adw-gtk3 jetbrains-mono nerd-fonts.jetbrains-mono
     inter noto-fonts-cjk-sans bibata-cursors papirus-icon-theme
+    
+    # --- Missing Dependencies for ilyamiro's Rice ---
+    ffmpeg                  # qs_manager.sh 缩略图生成
+    bc                      # 脚本计算
+    socat                   # 脚本通信
+    brightnessctl           # 亮度控制
+    pamixer                 # 音量控制
+    playerctl               # 媒体控制
+    swww                    # 壁纸引擎
+    imagemagick             # 图像处理
   ];
     
   # ilyamiro Style Cursor
@@ -90,6 +113,7 @@ in
     gtk4.extraConfig = {
       gtk-application-prefer-dark-theme = 1;
     };
+    gtk4.theme = null; # 消除 Home Manager 24.11+ 的警告
     iconTheme = {
       name = "Papirus-Dark";
       package = pkgs.papirus-icon-theme;
@@ -108,13 +132,15 @@ in
 
   home.file = {
     ".local/share/fonts/" = {
-      source = ../config/fonts; 
+      source = ilyamiro-config + "/config/fonts"; 
       recursive = true;
     };
     ".config/hypr/scripts/" = {
-      source = ../config/sessions/hyprland/scripts;
+      source = ilyamiro-config + "/config/sessions/hyprland/scripts";
       recursive = true;
     };
+    # 映射 Hyprland 核心配置
+    ".config/hypr/hyprland.conf".source = ilyamiro-config + "/config/sessions/hyprland/hyprland.conf";
   };
 
   services.easyeffects.enable = true;  
@@ -149,6 +175,7 @@ in
   home.sessionVariables = {
     GOPROXY = "https://goproxy.cn,direct";
     GOSUMDB = "sum.golang.google.cn";
+    NIXOS_OZONE_WL = "1";
   };
 
   programs.home-manager.enable = true;

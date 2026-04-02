@@ -47,6 +47,7 @@
     socat
     bc
     pulseaudio
+    ffmpeg
     ladspaPlugins
     ladspa-sdk
     imagemagick
