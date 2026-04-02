@@ -146,6 +146,49 @@ in
   programs.starship = {
     enable = true;
     enableZshIntegration = true;
+    settings = {
+      # 胶囊型布局定义
+      format = "$cmd_duration$status$directory$git_branch$nix_shell\n$character";
+      
+      # 1. 执行时间胶囊 (左侧第一个)
+      cmd_duration = {
+        min_time = 0;
+        format = "[](fg:#f38ba8)[󰪢 $duration](fg:#11111b bg:#f38ba8)[](fg:#f38ba8) ";
+      };
+
+      # 2. 状态/成功标识符 (中间的间隔符)
+      status = {
+        disabled = false;
+        format = "[󰜥 ](fg:#94e2d5)";
+        success_symbol = "[󰜥 ](fg:#94e2d5)";
+        error_symbol = "[󰜥 ](fg:#f38ba8)";
+      };
+
+      # 3. 路径胶囊
+      directory = {
+        format = " [](fg:#fab387)[󰉋 $path](fg:#11111b bg:#fab387)[](fg:#fab387) ";
+        truncation_length = 3;
+        truncation_symbol = "••/";
+      };
+
+      # 4. Git 分支胶囊
+      git_branch = {
+        symbol = "󰘬";
+        format = "[󰜥 ](fg:#94e2d5)[](fg:#cba6f8)[$symbol $branch](fg:#11111b bg:#cba6f8)[](fg:#cba6f8) ";
+      };
+
+      # 5. Nix Shell (DevOps 专属，进入 nix-shell 时会显示)
+      nix_shell = {
+        symbol = "";
+        format = "[](fg:#89b4fa)[$symbol](fg:#11111b bg:#89b4fa)[](fg:#89b4fa) ";
+      };
+
+      # 6. 下一行的输入字符
+      character = {
+        success_symbol = "[ ](bold fg:#a6e3a1)";
+        error_symbol = "[ ](bold fg:#f38ba8)";
+      };
+    };
   };
 
   # 别名映射：将 terraform 指向 tofu，将 docker 映射到 podman (通过 zsh 确保交互式体验)
