@@ -21,9 +21,15 @@
       url = "github:ilyamiro/nixos-configuration";
       flake = false;
     };
+
+    # Rime 词库 - 雾凇拼音
+    rime-ice = {
+      url = "github:iDvel/rime-ice";
+      flake = false;
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, nvim-config, ilyamiro-config, ... }:
+  outputs = { self, nixpkgs, home-manager, nvim-config, ilyamiro-config, rime-ice, ... }:
   let
     system = "x86_64-linux";
   in {
@@ -38,7 +44,7 @@
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = { inherit nvim-config ilyamiro-config; };
+          home-manager.extraSpecialArgs = { inherit nvim-config ilyamiro-config rime-ice; };
           home-manager.users.klee = import ./home/klee.nix;
         }
       ];

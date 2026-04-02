@@ -1,4 +1,4 @@
-{ config, pkgs, lib, nvim-config, ilyamiro-config, ... }:
+{ config, pkgs, lib, nvim-config, ilyamiro-config, rime-ice, ... }:
 
 let
   # 这里的 programImports 逻辑可以保留，用于加载本地定义
@@ -144,6 +144,10 @@ in
     };
     ".config/hypr/scripts/" = {
       source = ilyamiro-config + "/config/sessions/hyprland/scripts";
+      recursive = true;
+    };
+    ".local/share/fcitx5/rime" = {
+      source = rime-ice;
       recursive = true;
     };
   };
