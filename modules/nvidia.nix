@@ -10,7 +10,7 @@
     # 启用额外的硬件加速包
     extraPackages = with pkgs; [
       nvidia-vaapi-driver
-      vaapiVdpau
+      libva-vdpau-driver
       libvdpau-va-gl
     ];
   };
