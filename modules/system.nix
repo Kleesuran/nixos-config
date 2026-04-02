@@ -35,8 +35,14 @@
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
 
-  # Docker
-  virtualisation.docker.enable = true;
+  # Podman (作为 Docker 的更佳替代方案)
+  virtualisation.podman = {
+    enable = true;
+    # 启用 Docker 别名，学习时可以使用 docker 命令调用 podman
+    dockerCompat = true;
+    # 默认网络设置
+    defaultNetwork.settings.dns_enabled = true;
+  };
 
   # SSH
   services.openssh.enable = true;

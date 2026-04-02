@@ -10,8 +10,8 @@
     ../modules/hyprland.nix
     ../modules/input.nix
     ../modules/game.nix
-    ../modules/firewall.nix
     ../modules/clash.nix
+    ../modules/hardware.nix
   ];
 
   boot.kernelPackages = pkgs.linuxPackages_zen;

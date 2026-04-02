@@ -1,18 +1,36 @@
 { pkgs, ... }:
 
 {
-  # 1. 确保内核开启了 TUN 模块
+  # 1. 核心网络功能支持 (TUN 模式)
   boot.kernelModules = [ "tun" ];
-
-  # 2. 允许非 NixOS 原生二进制文件运行 (FlClash 内部内核需要)
+  
+  # 2. 允许非 NixOS 原生二进制文件运行 (FlClash 内部内核及 DevOps 工具可能需要)
   programs.nix-ld.enable = true;
 
-  # 3. 关闭防火墙的反向路径过滤 (TUN 模式必需)
-  # 否则流量会被标记为非法包而被系统丢弃
-  networking.firewall.checkReversePath = false;
+  # 3. 防火墙配置
+  networking.firewall = {
+    enable = true;
+    
+    # 允许 TUN 模式流量 (关闭反向路径过滤，防止流量被丢弃)
+    checkReversePath = false;
 
-  # 4. 为 FlClash 注入网卡管理权限 (关键步骤)
-  # 这会生成一个位于 /run/wrappers/bin/FlClash 的特殊执行文件
+    # 允许常用应用端口
+    # 53317: LocalSend
+    allowedTCPPorts = [ 53317 ];
+    allowedUDPPorts = [ 53317 ];
+
+    # 学习容器 (Podman/Docker) 开发专用端口范围
+    # 开放 8000 到 9000，解决每次都要改配置文件的问题
+    allowedTCPPortRanges = [ 
+      { from = 8000; to = 9000; } 
+    ];
+    allowedUDPPortRanges = [ 
+      { from = 8000; to = 9000; } 
+    ];
+  };
+
+  # 4. 为 FlClash 注入网卡管理权限
+  # 会在系统路径生成 /run/wrappers/bin/FlClash
   security.wrappers.FlClash = {
     owner = "root";
     group = "root";
