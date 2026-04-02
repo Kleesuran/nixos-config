@@ -20,15 +20,15 @@ in
   home.stateVersion = "24.11";
 
   # ilyamiro's Rice 核心组件引用
-  # 我们直接将远程仓库的 config 映射到本地，确保配置是最新的且完整的
+  # 使用 lib.mkForce 确保远程仓库的配置优先级高于本地默认定义
   xdg.configFile = {
-    "matugen".source = ilyamiro-config + "/config/programs/matugen";
-    "swaync".source = ilyamiro-config + "/config/programs/swaync";
-    "swayosd".source = ilyamiro-config + "/config/programs/swayosd";
-    "waybar".source = ilyamiro-config + "/config/programs/waybar";
-    "cava".source = ilyamiro-config + "/config/programs/cava";
-    "rofi".source = ilyamiro-config + "/config/programs/rofi";
-    "kitty".source = ilyamiro-config + "/config/programs/kitty";
+    "matugen".source = lib.mkForce (ilyamiro-config + "/config/programs/matugen");
+    "swaync".source = lib.mkForce (ilyamiro-config + "/config/programs/swaync");
+    "swayosd".source = lib.mkForce (ilyamiro-config + "/config/programs/swayosd");
+    "waybar".source = lib.mkForce (ilyamiro-config + "/config/programs/waybar");
+    "cava".source = lib.mkForce (ilyamiro-config + "/config/programs/cava");
+    "rofi".source = lib.mkForce (ilyamiro-config + "/config/programs/rofi");
+    "kitty".source = lib.mkForce (ilyamiro-config + "/config/programs/kitty");
   };
 
   home.packages = with pkgs; [
