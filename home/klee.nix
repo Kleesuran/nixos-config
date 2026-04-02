@@ -55,7 +55,8 @@ in
     # --- Development & DX ---
     git curl wget direnv
     go                      # Go 语言环境
-    vscode-fhs kitty
+    vscode-fhs kitty antigravity-fhs
+
     
     # --- Networking & Debug ---
     bind.dnsutils           # dig, nslookup
