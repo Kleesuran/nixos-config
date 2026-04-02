@@ -11,7 +11,7 @@
     ../modules/input.nix
     ../modules/game.nix
     ../modules/firewall.nix
-    ../modules/mihomo.nix
+    ../modules/clash.nix
   ];
 
   boot.kernelPackages = pkgs.linuxPackages_zen;
@@ -43,24 +43,19 @@
     jetbrains-mono
     nerd-fonts.jetbrains-mono
   ];
-environment.systemPackages = with pkgs; [
-  flclash
-  clash-verge-rev
-  mihomo  # 后端内核，推荐同时安装
-];
-  # ==================== Mihomo 服务 ====================
-  #services.mihomo = {
-   # enable = true;
-    #configFile = "/etc/mihomo/config.yaml";
-   # tunMode = true;
-  #};
 
-  # ==================== 修复 FlClash 文件导出问题 ====================
+  environment.systemPackages = with pkgs; [
+    flclash
+    clash-verge-rev
+    mihomo  # 推荐安装作为后端支持
+  ];
+
+  # ==================== 修复 FlClash 文件导出与桌面适配问题 ====================
   xdg.portal = {
     enable = true;
     extraPortals = with pkgs; [
       xdg-desktop-portal-gtk
-      xdg-desktop-portal-hyprland   # 因为你在用 Hyprland
+      xdg-desktop-portal-hyprland
     ];
     config.common.default = "*";
   };

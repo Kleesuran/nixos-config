@@ -1,0 +1,37 @@
+name: "NixOS Configuration Check"
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  check-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v9
+
+      - name: Magic Nix Cache
+        # 自动缓存已下载的 Nix 包，大幅提高后续运行速度
+        uses: DeterminateSystems/magic-nix-cache-action@v2
+
+      - name: Check Flake Metadata
+        # 验证 flake.nix 语法、inputs 是否能正确拉取（包括 nvim-config）
+        run: nix flake check
+
+      - name: Evaluate System Configuration
+        # 验证 NixOS 配置逻辑是否能正常解析（不涉及实际下载）
+        run: |
+          nix eval .#nixosConfigurations.klee.config.system.build.toplevel.drvPath
+
+      - name: Build Simulation (Dry Run)
+        # 模拟完整系统构建过程，检查所有依赖路径是否有效
+        # 使用 --dry-run 避免在 GitHub Runner 上产生数 GB 的下载和长时编译
+        run: |
+          nix build .#nixosConfigurations.klee.config.system.build.toplevel --dry-run

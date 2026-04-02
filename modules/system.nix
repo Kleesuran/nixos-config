@@ -44,12 +44,5 @@
   # Btrfs 定期优化
   services.btrfs.autoScrub.enable = true;
   services.btrfs.autoScrub.interval = "weekly";
-  #FlClash
-  security.wrappers.FlClash = {
-  source = "${pkgs.flclash}/bin/FlClash"; # 假设包名是 flclash
-  capabilities = "cap_net_admin,cap_net_bind_service+ep";
-  owner = "root";
-  group = "root";
-};
 
 }

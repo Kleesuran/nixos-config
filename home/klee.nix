@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, nvim-config, ... }:
 
 let
   # 程序的相对路径，注意在 Flake 结构中，home 目录位于 ./home/，而 config 位于 ./config/
@@ -77,6 +77,11 @@ in
   qt = {
     enable = true;
     platformTheme.name = "qt6ct";
+  };
+
+  xdg.configFile."nvim" = {
+    source = nvim-config;
+    recursive = true;
   };
 
   home.file = {

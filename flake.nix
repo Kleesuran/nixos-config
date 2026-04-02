@@ -9,9 +9,15 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Neovim DevOps 配置
+    nvim-config = {
+      url = "github:Kleesuran/my-nvim-devops-config";
+      flake = false;
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }:
+  outputs = { self, nixpkgs, home-manager, nvim-config, ... }:
   let
     system = "x86_64-linux";
   in {
@@ -26,7 +32,7 @@
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-
+          home-manager.extraSpecialArgs = { inherit nvim-config; };
           home-manager.users.klee = import ./home/klee.nix;
         }
       ];
