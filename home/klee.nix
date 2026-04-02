@@ -1,4 +1,4 @@
-{ config, pkgs, nvim-config, ilyamiro-config, ... }:
+{ config, pkgs, lib, nvim-config, ilyamiro-config, ... }:
 
 let
   # 这里的 programImports 逻辑可以保留，用于加载本地定义
