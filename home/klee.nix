@@ -139,8 +139,6 @@ in
       source = ilyamiro-config + "/config/sessions/hyprland/scripts";
       recursive = true;
     };
-    # 映射 Hyprland 核心配置
-    ".config/hypr/hyprland.conf".source = ilyamiro-config + "/config/sessions/hyprland/hyprland.conf";
   };
 
   services.easyeffects.enable = true;  
