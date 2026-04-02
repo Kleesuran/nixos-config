@@ -63,7 +63,7 @@ in
     nmap                    # 端口扫描与审计
     
     # --- User Apps ---
-    localsend google-chrome qq opencode splayer geminicli
+    localsend google-chrome qq opencode splayer heroic
     
     # --- UI Components from ilyamiro ---
     adwaita-icon-theme adw-gtk3 jetbrains-mono nerd-fonts.jetbrains-mono
