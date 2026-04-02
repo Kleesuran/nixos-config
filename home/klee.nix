@@ -29,6 +29,12 @@ in
     "cava".source = lib.mkForce (ilyamiro-config + "/config/programs/cava");
     "rofi".source = lib.mkForce (ilyamiro-config + "/config/programs/rofi");
     "kitty".source = lib.mkForce (ilyamiro-config + "/config/programs/kitty");
+    "opencode/opencode.json".text = ''
+      {
+        "$schema": "https://opencode.ai/config.json",
+        "plugin": ["opencode-gemini-auth@latest"]
+      }
+    '';
   };
 
   home.packages = with pkgs; [
@@ -57,7 +63,7 @@ in
     nmap                    # 端口扫描与审计
     
     # --- User Apps ---
-    localsend google-chrome qq opencode splayer
+    localsend google-chrome qq opencode splayer geminicli
     
     # --- UI Components from ilyamiro ---
     adwaita-icon-theme adw-gtk3 jetbrains-mono nerd-fonts.jetbrains-mono
