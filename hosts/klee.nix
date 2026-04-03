@@ -10,7 +10,7 @@
     ../modules/hyprland.nix
     ../modules/input.nix
     ../modules/game.nix
-    ../modules/clash.nix
+    ../modules/proxy.nix
     ../modules/hardware.nix
   ];
 

@@ -65,6 +65,7 @@ in
     
     # --- User Apps ---
     localsend google-chrome qq opencode splayer heroic
+    mihomo sing-box          # 更多高性能代理工具
     
     # --- UI Components from ilyamiro ---
     adwaita-icon-theme adw-gtk3 jetbrains-mono nerd-fonts.jetbrains-mono
