@@ -1,0 +1,99 @@
+{
+  "nodes": {
+    "home-manager": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1774991950,
+        "narHash": "sha256-kScKj3qJDIWuN9/6PMmgy5esrTUkYinrO5VvILik/zw=",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "f2d3e04e278422c7379e067e323734f3e8c585a7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "type": "github"
+      }
+    },
+    "ilyamiro-config": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1775163964,
+        "narHash": "sha256-tFRp8C8nMpXefMExk5d5VewwMhj8iBZ9qp1IFOElGaU=",
+        "owner": "ilyamiro",
+        "repo": "nixos-configuration",
+        "rev": "5230414291593935efa683820842eb857cf85c97",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ilyamiro",
+        "repo": "nixos-configuration",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1774709303,
+        "narHash": "sha256-D3Q07BbIA2KnTcSXIqqu9P586uWxN74zNoCH3h2ESHg=",
+        "ref": "nixos-unstable",
+        "rev": "8110df5ad7abf5d4c0f6fb0f8f978390e77f9685",
+        "revCount": 971119,
+        "type": "git",
+        "url": "https://mirrors.tuna.tsinghua.edu.cn/git/nixpkgs.git"
+      },
+      "original": {
+        "ref": "nixos-unstable",
+        "type": "git",
+        "url": "https://mirrors.tuna.tsinghua.edu.cn/git/nixpkgs.git"
+      }
+    },
+    "nvim-config": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1765005106,
+        "narHash": "sha256-CblgoBheVf1rlfazr0Wb5ddrsgFF8SxQZGYnuHftSdU=",
+        "owner": "Kleesuran",
+        "repo": "my-nvim-devops-config",
+        "rev": "76f6ab10f33e146e2a01590d12825220db15c4e8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Kleesuran",
+        "repo": "my-nvim-devops-config",
+        "type": "github"
+      }
+    },
+    "rime-ice": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1775132611,
+        "narHash": "sha256-pl3hCwKRzFEfWW9w8mEAM1OaqhFMFyjsFQiKmB4fbSQ=",
+        "owner": "iDvel",
+        "repo": "rime-ice",
+        "rev": "4c15933d984bc9fffaba898379a2db88483cf7c5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "iDvel",
+        "repo": "rime-ice",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "home-manager": "home-manager",
+        "ilyamiro-config": "ilyamiro-config",
+        "nixpkgs": "nixpkgs",
+        "nvim-config": "nvim-config",
+        "rime-ice": "rime-ice"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
