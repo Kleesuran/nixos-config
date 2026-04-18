@@ -30,13 +30,14 @@
   };
 
   outputs = { self, nixpkgs, home-manager, nvim-config, ilyamiro-config, rime-ice, daeuniverse , ... } @inputs:
-  let
-    system = "x86_64-linux";
-  in {
+  {
     nixosConfigurations.klee = nixpkgs.lib.nixosSystem {
-      inherit system;
+      # 使用 nixpkgs 内部推荐的参数传递方式，消除 evaluation warning
       specialArgs = { inherit inputs; };
       modules = [
+        # 在 modules 中显式声明架构
+        { nixpkgs.hostPlatform = "x86_64-linux"; }
+        
         ./hosts/klee.nix
         daeuniverse.nixosModules.daed
 

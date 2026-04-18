@@ -57,6 +57,17 @@
     noto-fonts-cjk-sans
     jetbrains-mono
     nerd-fonts.jetbrains-mono
+    
+    # 自定义本地 MiSans 字体打包
+    (stdenv.mkDerivation {
+      pname = "misans";
+      version = "1.0";
+      src = ../config/fonts/misans;
+      installPhase = ''
+        mkdir -p $out/share/fonts/truetype
+        cp MiSansVF.ttf $out/share/fonts/truetype/
+      '';
+    })
   ];
 
   environment.systemPackages = with pkgs; [

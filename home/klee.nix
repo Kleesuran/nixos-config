@@ -35,6 +35,14 @@ in
         "plugin": ["opencode-gemini-auth@latest"]
       }
     '';
+    # Fcitx5 全局 UI 调整候选词展示数量
+    "fcitx5/conf/classicui.conf".text = ''
+      # 水平显示候选列表
+      VerticalCandidateList=False
+      # 设置字体大一些（可选）
+      Font="Sans 12"
+      MenuFont="Sans 12"
+    '';
   };
 
   home.packages = with pkgs; [
@@ -46,6 +54,7 @@ in
     
     # --- Containers ---
     podman-compose          # 多容器编排学习
+    lazydocker              # Docker 终端管理工具
     
     # --- Automation & Data ---
     jq yq-go                # JSON/YAML 处理专家
@@ -54,6 +63,7 @@ in
     
     # --- Development & DX ---
     git curl wget direnv
+    lazygit                 # Git 终端管理工具
     go                      # Go 语言环境
     vscode-fhs kitty antigravity-fhs
 
@@ -135,6 +145,9 @@ in
   xdg.configFile."nvim" = {
     source = nvim-config;
     recursive = true;
+    onChange = ''
+      rm -f $HOME/.config/nvim/lazy-lock.json
+    '';
   };
 
   home.file = {
@@ -229,6 +242,7 @@ in
     GOSUMDB = "sum.golang.google.cn";
     NIXOS_OZONE_WL = "1";
   };
+
 
   programs.home-manager.enable = true;
   fonts.fontconfig.enable = true; 

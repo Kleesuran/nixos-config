@@ -9,7 +9,7 @@
       # 优先使用国内二级缓存镜像
       substituters = [
         "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
-        "https://mirror.sjtu.edu.cn/nixos" # 上海交大镜像
+        "https://mirror.sjtu.edu.cn/nix-channels/store" # 上海交大二进制缓存镜像
         "https://cache.nixos.org"
       ];
       trusted-public-keys = [
@@ -31,8 +31,13 @@
   };
 
   environment.systemPackages = with pkgs; [
-    git vim curl wget htop btop neovim 
+    git vim curl wget htop btop neovim kdePackages.ksshaskpass
   ];
+
+  # 配置 sudo 使用 KDE 的 askpass 助手 (SUDO_ASKPASS 环境变量)
+  environment.variables = {
+    SUDO_ASKPASS = "${pkgs.kdePackages.ksshaskpass}/bin/ksshaskpass";
+  };
 
   # ZSH 必须在系统级启用才能作为默认 shell
   programs.zsh.enable = true;
@@ -86,5 +91,16 @@
   # Btrfs 定期优化
   services.btrfs.autoScrub.enable = true;
   services.btrfs.autoScrub.interval = "weekly";
+
+  # 字体管理与默认字体偏好
+  fonts.fontconfig = {
+    enable = true;
+    defaultFonts = {
+      emoji = [ "Noto Color Emoji" ];
+      monospace = [ "JetBrainsMono Nerd Font" "JetBrains Mono" ];
+      sansSerif = [ "MiSans" "Noto Sans CJK SC" ];
+      serif = [ "MiSans" "Noto Serif CJK SC" ];
+    };
+  };
 
 }
