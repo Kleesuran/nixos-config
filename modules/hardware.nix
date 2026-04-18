@@ -16,8 +16,6 @@
       };
     };
   };
-  # 蓝牙管理工具
-  services.blueman.enable = true;
 
   # 3. 硬件固件与驱动 (AX210 必需)
   hardware.enableRedistributableFirmware = true;

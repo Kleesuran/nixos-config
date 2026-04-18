@@ -24,6 +24,9 @@
     };
   };
 
+  # 支持的底层文件系统 (添加 NTFS)
+  boot.supportedFilesystems = [ "ntfs" "btrfs" "vfat" ];
+
   # Plymouth 动画主题
   boot.plymouth = {
     enable = true;

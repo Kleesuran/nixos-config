@@ -10,9 +10,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Neovim DevOps 配置
+    # Neovim 配置
     nvim-config = {
-      url = "github:Kleesuran/my-nvim-devops-config";
+      url = "git+ssh://git@github.com/Kleesuran/my-nvim-config.git";
       flake = false;
     };
 

@@ -23,10 +23,6 @@
       max-jobs = "auto";
     };
     
-    # 这一行是“核弹级”加速：如果国内镜像没有缓存，Nix 守护进程将通过你的本地代理直连官方源
-    # 注意：如果你的代理 (Mihomo/FlClash) 还没启动，这一行可能会导致构建报错
-    # proxy = "http://127.0.0.1:7890";
-
     # 将系统中的 nixpkgs 注册表也指向镜像，提升日常 nix 命令速度
     registry.nixpkgs.to = {
       type = "path";
@@ -42,6 +38,21 @@
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
 
+  # 区域与语言设置 (简体中文)
+  i18n.defaultLocale = "zh_CN.UTF-8";
+  i18n.supportedLocales = [ "zh_CN.UTF-8/UTF-8" "en_US.UTF-8/UTF-8" ];
+  i18n.extraLocaleSettings = {
+    LC_ADDRESS = "zh_CN.UTF-8";
+    LC_IDENTIFICATION = "zh_CN.UTF-8";
+    LC_MEASUREMENT = "zh_CN.UTF-8";
+    LC_MONETARY = "zh_CN.UTF-8";
+    LC_NAME = "zh_CN.UTF-8";
+    LC_NUMERIC = "zh_CN.UTF-8";
+    LC_PAPER = "zh_CN.UTF-8";
+    LC_TELEPHONE = "zh_CN.UTF-8";
+    LC_TIME = "zh_CN.UTF-8";
+  };
+
   # Podman (作为 Docker 的更佳替代方案)
   virtualisation.podman = {
     enable = true;
@@ -53,6 +64,17 @@
 
   # SSH
   services.openssh.enable = true;
+
+  # CUPS 打印支持 (含网络发现)
+  services.printing.enable = true;
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+  };
+
+  # Flatpak 支持
+  services.flatpak.enable = true;
 
   # Btrfs 定期优化
   services.btrfs.autoScrub.enable = true;
