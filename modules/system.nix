@@ -65,6 +65,13 @@
   # SSH
   services.openssh.enable = true;
 
+  # 系统防火墙与端口白名单 (LocalSend 等)
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [ 53317 ]; # LocalSend
+    allowedUDPPorts = [ 53317 ]; # LocalSend
+  };
+
   # CUPS 打印支持 (含网络发现)
   services.printing.enable = true;
   services.avahi = {
