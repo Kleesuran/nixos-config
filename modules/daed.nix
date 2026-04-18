@@ -1,19 +1,27 @@
-{ pkgs, ... }:
+{ pkgs, lib, config, ... }:
 
 {
-  # Override daed package with corrected vendorHash for goproxy.cn
-  nixpkgs.overlays = [
-    (final: prev: {
-      daed = prev.daed.overrideAttrs (old: {
-        vendorHash = "sha256-b8fNqIrnfT5X3Pp4obbvryiwPX5sEYfWNO7G9ojW4TI=";
-      });
-    })
-  ];
+  # Disable the daed service from daeuniverse module first
+  services.daed.enable = lib.mkForce false;
 
-  # 启用 daed 服务 (基于 eBPF 的高性能透明代理)
-  services.daed = {
-    enable = true;
+  # Use your own overridden daed package with a systemd service
+  systemd.services.daed = {
+    description = "daed - eBPF-based high-performance transparent proxy";
+    after = [ "network.target" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${pkgs.daed.overrideAttrs (old: {
+        vendorHash = \"sha256-b8fNqIrnfT5X3Pp4obbvryiwPX5sEYfWNO7G9ojW4TI=\";
+      })}/bin/daed run -c /etc/daed";
+      Restart = "on-failure";
+    };
   };
+
+  # Create dummy config directory (adjust as needed)
+  systemd.tmpfiles.rules = [
+    "d /etc/daed 0755 root root -"
+  ];
 
   # 开放 Web 控制面板端口 (默认 2023)
   networking.firewall.allowedTCPPorts = [ 2023 ];
