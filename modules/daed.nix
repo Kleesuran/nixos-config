@@ -11,9 +11,11 @@
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       Type = "simple";
-      ExecStart = "${pkgs.daed.overrideAttrs (old: {
-        vendorHash = \"sha256-b8fNqIrnfT5X3Pp4obbvryiwPX5sEYfWNO7G9ojW4TI=\";
-      })}/bin/daed run -c /etc/daed";
+      ExecStart = let
+        daedFixed = pkgs.daed.overrideAttrs (old: {
+          vendorHash = "sha256-b8fNqIrnfT5X3Pp4obbvryiwPX5sEYfWNO7G9ojW4TI=";
+        });
+      in "${daedFixed}/bin/daed run -c /etc/daed";
       Restart = "on-failure";
     };
   };
