@@ -4,7 +4,7 @@
   inputs = {
     # 使用清华大学提供的 Nixpkgs Git 镜像
     nixpkgs.url = "git+https://mirrors.tuna.tsinghua.edu.cn/git/nixpkgs.git?ref=nixos-unstable";
-
+    daeuniverse.url = "github:daeuniverse/flake.nix";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -12,7 +12,7 @@
 
     # Neovim 配置
     nvim-config = {
-      url = "git+ssh://git@github.com/Kleesuran/my-nvim-config.git";
+      url = "github:Kleesuran/my-nvim-config";
       flake = false;
     };
 
@@ -29,22 +29,23 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, nvim-config, ilyamiro-config, rime-ice, ... }:
+  outputs = { self, nixpkgs, home-manager, nvim-config, ilyamiro-config, rime-ice, daeuniverse , ... } @inputs:
   let
     system = "x86_64-linux";
   in {
     nixosConfigurations.klee = nixpkgs.lib.nixosSystem {
       inherit system;
-
+      specialArgs = { inherit inputs; };
       modules = [
         ./hosts/klee.nix
+        daeuniverse.nixosModules.daed
 
         home-manager.nixosModules.home-manager
 
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = { inherit nvim-config ilyamiro-config rime-ice; };
+          home-manager.extraSpecialArgs = { inherit inputs nvim-config ilyamiro-config rime-ice; };
           home-manager.users.klee = import ./home/klee.nix;
         }
       ];

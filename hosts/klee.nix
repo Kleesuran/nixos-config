@@ -73,5 +73,5 @@
   };
 
   # system.stateVersion 必须放在这里面！
-  system.stateVersion = "24.11";
+  system.stateVersion = "25.11";
 }

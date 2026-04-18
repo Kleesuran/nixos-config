@@ -1,5 +1,42 @@
 {
   "nodes": {
+    "daeuniverse": {
+      "inputs": {
+        "flake-parts": "flake-parts",
+        "nixpkgs": "nixpkgs"
+      },
+      "locked": {
+        "lastModified": 1771591323,
+        "narHash": "sha256-uX6uAWdCdfzgv6dQ+O2Lj5QzkfN6BflyOsxj1pEael0=",
+        "owner": "daeuniverse",
+        "repo": "flake.nix",
+        "rev": "62d55a8172c5ec028b21d50ea54c7c73107db6aa",
+        "type": "github"
+      },
+      "original": {
+        "owner": "daeuniverse",
+        "repo": "flake.nix",
+        "type": "github"
+      }
+    },
+    "flake-parts": {
+      "inputs": {
+        "nixpkgs-lib": "nixpkgs-lib"
+      },
+      "locked": {
+        "lastModified": 1767609335,
+        "narHash": "sha256-feveD98mQpptwrAEggBQKJTYbvwwglSbOv53uCfH9PY=",
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "rev": "250481aafeb741edfe23d29195671c19b36b6dca",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -38,6 +75,37 @@
     },
     "nixpkgs": {
       "locked": {
+        "lastModified": 1767767207,
+        "narHash": "sha256-Mj3d3PfwltLmukFal5i3fFt27L6NiKXdBezC1EBuZs4=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "5912c1772a44e31bf1c63c0390b90501e5026886",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs-lib": {
+      "locked": {
+        "lastModified": 1765674936,
+        "narHash": "sha256-k00uTP4JNfmejrCLJOwdObYC9jHRrr/5M/a/8L2EIdo=",
+        "owner": "nix-community",
+        "repo": "nixpkgs.lib",
+        "rev": "2075416fcb47225d9b68ac469a5c4801a9c4dd85",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "nixpkgs.lib",
+        "type": "github"
+      }
+    },
+    "nixpkgs_2": {
+      "locked": {
         "lastModified": 1774709303,
         "narHash": "sha256-D3Q07BbIA2KnTcSXIqqu9P586uWxN74zNoCH3h2ESHg=",
         "ref": "nixos-unstable",
@@ -55,16 +123,16 @@
     "nvim-config": {
       "flake": false,
       "locked": {
-        "lastModified": 1765005106,
-        "narHash": "sha256-CblgoBheVf1rlfazr0Wb5ddrsgFF8SxQZGYnuHftSdU=",
+        "lastModified": 1776495710,
+        "narHash": "sha256-xxTp4aE9Lbqbv8JyfkI8IUf59rsXQwhfWlOy+S9SwgA=",
         "owner": "Kleesuran",
-        "repo": "my-nvim-devops-config",
-        "rev": "76f6ab10f33e146e2a01590d12825220db15c4e8",
+        "repo": "my-nvim-config",
+        "rev": "f36e755abaf23c48534398bc348b70dcf2672687",
         "type": "github"
       },
       "original": {
         "owner": "Kleesuran",
-        "repo": "my-nvim-devops-config",
+        "repo": "my-nvim-config",
         "type": "github"
       }
     },
@@ -86,9 +154,10 @@
     },
     "root": {
       "inputs": {
+        "daeuniverse": "daeuniverse",
         "home-manager": "home-manager",
         "ilyamiro-config": "ilyamiro-config",
-        "nixpkgs": "nixpkgs",
+        "nixpkgs": "nixpkgs_2",
         "nvim-config": "nvim-config",
         "rime-ice": "rime-ice"
       }
