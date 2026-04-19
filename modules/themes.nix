@@ -48,12 +48,12 @@ in
   };
 
   # Home Manager 用户级配置
-  home-manager.users.klee = {
+  home-manager.users.klee = { lib, ... }: {
     home.activation.applyPlasmaTheme = lib.hm.dag.entryAfter ["writeBoundary"] ''
       ${pkgs.kdePackages.plasma-workspace}/bin/plasma-apply-lookandfeel -a Catppuccin-Mocha-Blue || true
     '';
     
-    # 图标主题在 home.nix 中已经有部分逻辑，但我们这里显式指定
+    # 图标主题
     gtk.iconTheme = {
       name = "Tela-manjaro-dark";
       package = tela-manjaro-icons;
