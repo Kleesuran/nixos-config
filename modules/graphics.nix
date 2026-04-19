@@ -35,6 +35,12 @@ in
         # NVIDIA 专属加速
         nvidia-vaapi-driver
       ] else []);
+      extraPackages32 = with pkgs.pkgsi686Linux; [
+        libva-vdpau-driver
+        libvdpau-va-gl
+      ] ++ (if cfg.gpuType == "nvidia" then [
+        nvidia-vaapi-driver
+      ] else []);
     };
 
     # 2. NVIDIA 专属配置
