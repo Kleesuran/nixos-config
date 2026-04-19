@@ -10,18 +10,19 @@ in
     enable = mkEnableOption "NVIDIA CUDA and Container Toolkit support";
   };
 
-  config = mkIf (cfg.enable && graphicsCfg.gpuType == "nvidia") {
-    # 启用 NVIDIA Container Toolkit (CDI)
-    # 允许 Podman 和 Docker 容器直接调用 NVIDIA GPU 进行 AI 推理或计算
+  config = mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = graphicsCfg.gpuType == "nvidia";
+        message = "drivers.cuda.enable 仅在 drivers.graphics.gpuType = \"nvidia\" 时支持。";
+      }
+    ];
+
+    # CUDA 模块只负责计算栈，不再混入游戏图形配置。
     hardware.nvidia-container-toolkit.enable = true;
 
-    # 同时也为宿主机提供基础的 CUDA 运行库支持
-    # 这样可以在不进入容器的情况下运行简单的 GPU 程序
     environment.systemPackages = with pkgs; [
       cudaPackages.cudatoolkit
     ];
-
-    # 针对 Podman 的额外优化 (由于您在 system.nix 中启用了 Podman)
-    virtualisation.podman.enable = true;
   };
 }

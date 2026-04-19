@@ -3,57 +3,50 @@
 with lib;
 let
   cfg = config.drivers.graphics;
+  isNvidia = cfg.gpuType == "nvidia";
+  isAmd = cfg.gpuType == "amd";
+  isIntel = cfg.gpuType == "intel";
 in
 {
   options.drivers.graphics = {
-    enable = mkEnableOption "Graphics support";
+    enable = mkEnableOption "system graphics stack";
     gpuType = mkOption {
       type = types.enum [ "nvidia" "amd" "intel" "none" ];
       default = "none";
-      description = "Choose which GPU driver to enable";
+      description = "Which GPU driver family should be configured.";
     };
   };
 
   config = mkIf cfg.enable {
-    # 1. 基础图形支持 (通用)
+    # Steam/Proton and many native games still need 32-bit userspace.
     hardware.graphics = {
       enable = true;
       enable32Bit = true;
-      extraPackages = with pkgs; [
-        # 通用硬件加速
-        libva-vdpau-driver
-        libvdpau-va-gl
-      ] ++ (if cfg.gpuType == "intel" then [
-        # Intel 专属加速 (适用于第8代及以后)
-        intel-media-driver
-        vaapiIntel
-      ] else if cfg.gpuType == "amd" then [
-        # AMD 专属加速 (新架构)
-        libvdpau
-        vaapiVdpau
-      ] else if cfg.gpuType == "nvidia" then [
-        # NVIDIA 专属加速
-        nvidia-vaapi-driver
-      ] else []);
-      extraPackages32 = with pkgs.pkgsi686Linux; [
-        libva-vdpau-driver
-        libvdpau-va-gl
-      ] ++ (if cfg.gpuType == "nvidia" then [
-        nvidia-vaapi-driver
-      ] else []);
+      extraPackages =
+        with pkgs;
+        [ libva-vdpau-driver libvdpau-va-gl ]
+        ++ optionals isIntel [ intel-media-driver vaapiIntel ]
+        ++ optionals isAmd [ libvdpau vaapiVdpau ]
+        ++ optionals isNvidia [ nvidia-vaapi-driver ];
+      extraPackages32 =
+        with pkgs.pkgsi686Linux;
+        [ libva-vdpau-driver libvdpau-va-gl ]
+        ++ optionals isAmd [ libvdpau vaapiVdpau ];
     };
 
-    # 2. NVIDIA 专属配置
-    services.xserver.videoDrivers = mkIf (cfg.gpuType == "nvidia") [ "nvidia" ];
-    hardware.nvidia = mkIf (cfg.gpuType == "nvidia") {
+    services.xserver.videoDrivers = mkIf isNvidia [ "nvidia" ];
+
+    # For a Turing mobile GPU, the proprietary kernel module is still the safer
+    # default for Steam/Proton than the open variant.
+    hardware.nvidia = mkIf isNvidia {
       modesetting.enable = true;
-      open = true; 
+      open = mkDefault false;
       nvidiaSettings = true;
       package = config.boot.kernelPackages.nvidiaPackages.stable;
-      powerManagement.enable = false;
+      powerManagement = {
+        enable = false;
+        finegrained = false;
+      };
     };
-
-    # 3. AMD 专属配置 (通常由内核直接支持，但需要开启某些参数)
-    # 对于 AMD，主要配置通常已在 boot.kernelParams 中完成
   };
 }

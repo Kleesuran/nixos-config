@@ -1,30 +1,43 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
+let
+  steamPackage = pkgs.steam.override {
+    extraPkgs = steamPkgs: with steamPkgs; [
+      keyutils
+      libkrb5
+      libpng
+      libpulseaudio
+      libvorbis
+      stdenv.cc.cc.lib
+      xorg.libXcursor
+      xorg.libXi
+      xorg.libXinerama
+      xorg.libXScrnSaver
+    ];
+  };
+in
 {
-  # Steam 相关程序配置
   programs.steam = {
     enable = true;
+    package = steamPackage;
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
     localNetworkGameTransfers.openFirewall = true;
-    extraPackages = with pkgs; [
-      zenity
-      xdg-utils
-      SDL2
-      libglvnd
-      libGL
-      vulkan-loader
-      vulkan-validation-layers
-      libpulseaudio
-      libx11
-      libxcursor
-      libxi
-      libxinerama
-      libxrandr
-      libxrender
-      libxscrnsaver
-      libxxf86vm
+    extraCompatPackages = with pkgs; [
+      proton-ge-bin
     ];
   };
+
+  programs.gamescope = {
+    enable = true;
+    capSysNice = true;
+  };
+
   programs.gamemode.enable = true;
+
+  environment.systemPackages = with pkgs; [
+    mangohud
+    protonup-qt
+    steam-run
+  ];
 }
