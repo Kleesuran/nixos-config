@@ -8,6 +8,7 @@
       experimental-features = [ "nix-command" "flakes" ];
       # 优先使用国内二级缓存镜像
       substituters = [
+        "file:///run/media/klee/KIOXIA/Audiobooks/nixos/.nix-cache"
         "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
         "https://mirror.sjtu.edu.cn/nix-channels/store" # 上海交大二进制缓存镜像
         "https://cache.nixos.org"

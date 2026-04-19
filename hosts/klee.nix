@@ -4,6 +4,7 @@
   imports = [
     ./klee-hardware.nix
     ../modules/boot.nix
+    ../modules/bootloader-grub.nix
     ../modules/system.nix
     ../modules/graphics.nix
     ../modules/cuda.nix
@@ -29,6 +30,13 @@
 
   # 启用当前设备 (2070m) 特定的硬盘挂载策略
   device.klee-2070m.enable = true;
+
+  # Fedora 负责第一层 GRUB 菜单，NixOS 保留自己的 EFI/GRUB 用于
+  # generation 与 rollback，并由 Fedora 进行 chainload。
+  bootloaders.nixosGrub = {
+    enable = true;
+    canTouchEfiVariables = false;
+  };
 
   boot.kernelPackages = pkgs.linuxPackages_zen;
 

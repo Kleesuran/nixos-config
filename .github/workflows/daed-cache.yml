@@ -1,0 +1,44 @@
+name: Daed Cache
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - flake.nix
+      - flake.lock
+      - hosts/klee.nix
+      - modules/daed.nix
+      - modules/system.nix
+
+jobs:
+  export-daed-cache:
+    name: Export Daed Closure
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Daed Package
+        run: |
+          nix build --no-link --print-out-paths .#nixosConfigurations.klee.config.services.daed.package | tee daed-path.txt
+          jq -r '.nodes.daeuniverse.locked.rev' flake.lock | tee daed-rev.txt
+
+      - name: Export Local Binary Cache
+        run: |
+          mkdir -p daed-cache
+          nix copy --to "file://$PWD/daed-cache" "$(cat daed-path.txt)"
+          tar -C daed-cache -czf daed-cache.tar.gz .
+
+      - name: Upload Cache Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: daed-cache
+          path: |
+            daed-cache.tar.gz
+            daed-path.txt
+            daed-rev.txt
