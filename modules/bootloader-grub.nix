@@ -23,6 +23,12 @@ in
         into NixOS.
       '';
     };
+
+    useOSProber = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Whether to use OS Prober to find other OSs.";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -36,7 +42,7 @@ in
         enable = true;
         device = "nodev";
         efiSupport = true;
-        useOSProber = false;
+        useOSProber = cfg.useOSProber;
         gfxmodeEfi = "auto";
         configurationLimit = 10;
       };

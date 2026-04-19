@@ -17,26 +17,26 @@
     ../modules/devops-lab.nix
     ../modules/klee-storage.nix
     ../modules/hardware.nix
+    ../modules/options.nix
   ];
 
-  # 启用图形支持并指定 GPU 类型 (nvidia/amd/intel)
-  drivers.graphics = {
-    enable = true;
-    gpuType = "nvidia";
+  # ==================== Klee 系统控制面板 ====================
+  klee = {
+    gpu = {
+      type = "nvidia";  # 自动触发 drivers.graphics 和 drivers.cuda
+      cuda = true;
+    };
+    boot = {
+      mode = "chainload"; # 目前由 Fedora 接管；换新电脑改 standalone
+      efiSysMountPoint = "/boot";
+    };
+    storage.isKlee2070m = true; # 针对当前 2070m 设备的硬盘挂载
+    daed = {
+      enable = true;
+      useFallback = false; # 如果网络死锁，临时改为 true，并确保 .nix-cache/daed-bin 存在
+    };
   };
-
-  # 启用 CUDA 与容器 GPU 加速
-  drivers.cuda.enable = true;
-
-  # 启用当前设备 (2070m) 特定的硬盘挂载策略
-  device.klee-2070m.enable = true;
-
-  # Fedora 负责第一层 GRUB 菜单，NixOS 保留自己的 EFI/GRUB 用于
-  # generation 与 rollback，并由 Fedora 进行 chainload。
-  bootloaders.nixosGrub = {
-    enable = true;
-    canTouchEfiVariables = false;
-  };
+  # ==========================================================
 
   boot.kernelPackages = pkgs.linuxPackages_zen;
 
