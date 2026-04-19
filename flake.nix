@@ -46,6 +46,7 @@
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
+          home-manager.backupFileExtension = "backup";
           home-manager.extraSpecialArgs = { inherit inputs nvim-config ilyamiro-config rime-ice; };
           home-manager.users.klee = import ./home/klee.nix;
         }
