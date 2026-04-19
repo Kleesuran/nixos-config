@@ -53,9 +53,7 @@ with lib;
       enable = true;
       canTouchEfiVariables = config.klee.boot.mode == "standalone";
       efiSysMountPoint = config.klee.boot.efiSysMountPoint;
+      useOSProber = config.klee.boot.mode == "standalone";
     };
-    
-    # 如果是 standalone 模式，通常建议开启 OS Prober
-    boot.loader.grub.useOSProber = mkIf (config.klee.boot.mode == "standalone") true;
   };
 }
