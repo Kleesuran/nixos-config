@@ -11,6 +11,7 @@
     ../modules/hyprland.nix
     ../modules/input.nix
     ../modules/game.nix
+    ../modules/steam.nix
     ../modules/daed.nix
     ../modules/devops-lab.nix
     ../modules/klee-storage.nix

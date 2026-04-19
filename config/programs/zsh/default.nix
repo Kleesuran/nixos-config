@@ -11,7 +11,7 @@
     history.path = "$HOME/.zsh_history";
     history.ignoreAllDups = true;
 
-    initContent = builtins.readFile ./zsh-init.sh;
+    initExtra = builtins.readFile ./zsh-init.sh;
 
     shellAliases = {
       edit = "sudo -E nvim -n";

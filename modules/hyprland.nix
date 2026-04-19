@@ -34,9 +34,14 @@
     xdg-desktop-portal-gtk
   ];
 
-  # XDG Portal 适配
+  # XDG Portal 适配 (已统一到 hosts/klee.nix 或此处集中管理)
+  # 建议在 Hyprland 模块中完整定义，方便桌面环境解耦
   xdg.portal = {
     enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-gtk
+      xdg-desktop-portal-hyprland
+    ];
+    config.common.default = "*";
   };
 }
