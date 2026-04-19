@@ -27,7 +27,7 @@
       cuda = true;
     };
     boot = {
-      mode = "chainload"; # 目前由 Fedora 接管；换新电脑改 standalone
+      mode = "standalone"; # NixOS 独立引导，接管 BIOS 启动项
       efiSysMountPoint = "/boot";
     };
     storage.isKlee2070m = true; # 针对当前 2070m 设备的硬盘挂载
