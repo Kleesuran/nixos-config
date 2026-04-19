@@ -44,7 +44,7 @@ in
   # SDDM 设置
   services.displayManager.sddm = {
     theme = "pixel-emerald";
-    themePackages = [ pixel-emerald-sddm ];
+    extraPackages = [ pixel-emerald-sddm ];
   };
 
   # Home Manager 用户级配置
