@@ -78,7 +78,6 @@ bootloaders.nixosGrub = {
 
 因此：
 
-- [`modules/klee-storage.nix`](./modules/klee-storage.nix) 里只保留相对稳妥的 NTFS 挂载参数
 - [`modules/steam.nix`](./modules/steam.nix) 提供了 `steam-fix-ntfs-library`
 
 使用方式：
@@ -181,7 +180,6 @@ steam-fix-ntfs-library /run/media/klee/DATA-M.2/SteamLibrary
 - [`hosts/klee.nix`](./hosts/klee.nix) 里的 `drivers.graphics.gpuType`
 - [`hosts/klee.nix`](./hosts/klee.nix) 里的 `drivers.cuda.enable`
 - [`hosts/klee.nix`](./hosts/klee.nix) 里的 `bootloaders.nixosGrub`
-- [`modules/klee-storage.nix`](./modules/klee-storage.nix) 里的 UUID 与挂载点
 - [`hosts/klee-hardware.nix`](./hosts/klee-hardware.nix) 的自动生成硬件项
 
 ## 风险说明

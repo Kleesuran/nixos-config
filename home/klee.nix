@@ -131,10 +131,6 @@ in
       gtk-application-prefer-dark-theme = 1;
     };
     gtk4.theme = null; # 消除 Home Manager 24.11+ 的警告
-    iconTheme = {
-      name = "Papirus-Dark";
-      package = pkgs.papirus-icon-theme;
-    };
   };
 
   qt = {

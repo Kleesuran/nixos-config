@@ -28,10 +28,6 @@ with lib;
       };
     };
 
-    storage = {
-      isKlee2070m = mkEnableOption "Klee's RTX 2070 Mobile specific storage layout";
-    };
-
     daed = {
       enable = mkEnableOption "daed network proxy service";
       useFallback = mkEnableOption "Zero-Network Fallback mode (uses local binary)";
@@ -46,8 +42,6 @@ with lib;
     };
 
     drivers.cuda.enable = config.klee.gpu.cuda;
-
-    device.klee-2070m.enable = config.klee.storage.isKlee2070m;
 
     bootloaders.nixosGrub = {
       enable = true;

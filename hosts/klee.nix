@@ -15,8 +15,8 @@
     ../modules/steam.nix
     ../modules/daed.nix
     ../modules/devops-lab.nix
-    ../modules/klee-storage.nix
     ../modules/hardware.nix
+    ../modules/themes.nix
     ../modules/options.nix
   ];
 
@@ -30,7 +30,6 @@
       mode = "standalone"; # NixOS 独立引导，接管 BIOS 启动项
       efiSysMountPoint = "/boot";
     };
-    storage.isKlee2070m = true; # 针对当前 2070m 设备的硬盘挂载
     daed = {
       enable = true;
       useFallback = false; # 如果网络死锁，临时改为 true，并确保 .nix-cache/daed-bin 存在
