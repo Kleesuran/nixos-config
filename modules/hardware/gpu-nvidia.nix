@@ -1,6 +1,18 @@
 # NVIDIA RTX 2070 Mobile / Max-Q（TU106M，独显无核显）
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
+let
+  # 595.104.02 的 nvidia-smi 被 patchelf 打出重叠的 PT_LOAD，.dynamic
+  # 落在只读段，ld.so 写 DT_DEBUG 时段错误。这里只替换 nvidia-smi 这一个
+  # 可执行文件，内核模块和其余用户态组件保持原样；上游布局修复后脚本会自动跳过。
+  nvidiaSmiFixed = pkgs.runCommand "nvidia-smi-elf-fix" { } ''
+    mkdir -p $out/bin
+    cp ${config.hardware.nvidia.package.bin}/bin/nvidia-smi $out/bin/nvidia-smi
+    chmod u+w $out/bin/nvidia-smi
+    ${pkgs.python3}/bin/python3 ${./fix-nvidia-smi.py} $out/bin/nvidia-smi
+    chmod 0555 $out/bin/nvidia-smi
+  '';
+in
 {
   services.xserver.videoDrivers = [ "nvidia" ];
 
@@ -46,5 +58,9 @@
     NIXOS_OZONE_WL = "1";
   };
 
-  environment.systemPackages = [ pkgs.nvtopPackages.nvidia ];
+  environment.systemPackages = [
+    pkgs.nvtopPackages.nvidia
+    # 覆盖驱动自带的 nvidia-smi（同路径冲突时优先使用本包）
+    (lib.hiPrio nvidiaSmiFixed)
+  ];
 }
