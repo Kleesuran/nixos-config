@@ -47,6 +47,12 @@ in
         configurationLimit = 5;
 
         extraConfig = ''
+          # 下面的自定义菜单项排在 NixOS 之前，首次安装时 saved_entry 为空，
+          # 不指定的话默认会落到第一个条目（Windows）。
+          if [ -z "''${saved_entry}" ]; then
+            set default="NixOS"
+          fi
+
           # ---------------------------------------------------------------
           # Windows：GRUB 注入 ACPI 表后再交给 Windows Boot Manager
           # ---------------------------------------------------------------
