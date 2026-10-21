@@ -141,3 +141,23 @@ ACPI 补丁 dsdt.aml 已复制到 /efi/dsdt.aml，Linux 侧用 boot.initrd.prepe
 - 校验：`cd nixos-config && git log --oneline`
 - 关键模块：`hosts/legion-t5/boot.nix`（引导/ACPI）、`modules/security/secureboot.nix`（签名）、
   `hosts/legion-t5/disk.nix`（子卷）
+
+U 盘是 exFAT，两个限制：
+
+1. **脚本没有执行位**，要写成 `bash scripts/install-from-arch.sh`，不要 `./`。
+2. **不支持符号链接**，仓库里的 `result` 软链已排除，不影响求值。
+
+Live 环境里 U 盘挂载点通常不是 `/run/media/klee`，先找盘：
+
+```bash
+lsblk -f | grep -i exfat      # 117G 的 KIOXIA
+sudo mkdir -p /mnt/usb && sudo mount /dev/sdX1 /mnt/usb
+cd /mnt/usb/nixos/nixos-config
+```
+
+直接用它安装：
+
+```bash
+sudo nixos-install --flake /mnt/usb/nixos/nixos-config#legion-t5
+```
+
