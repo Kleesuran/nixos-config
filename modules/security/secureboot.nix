@@ -13,7 +13,7 @@ let
 
     [ -f "$key" ] || { echo "sbctl 密钥不存在，跳过签名"; exit 0; }
 
-    for f in /efi/EFI/nixos/grubx64.efi /efi/EFI/BOOT/BOOTX64.EFI; do
+    for f in /efi/EFI/*/grubx64.efi /efi/EFI/BOOT/BOOTX64.EFI; do
       [ -f "$f" ] || continue
       tmp="$f.signed"
       ${pkgs.sbsigntool}/bin/sbsign --key "$key" --cert "$cert" --output "$tmp" "$f"
@@ -26,6 +26,15 @@ in
   boot.loader.grub.extraInstallCommands = ''
     ${signGrub}
   '';
+
+  # GRUB 的 Windows 条目从 ESP 根目录读取 acpi 表
+  system.activationScripts.dsdt = {
+    text = ''
+      if [ -d /efi ]; then
+        ${pkgs.coreutils}/bin/install -Dm644 ${../../firmware/dsdt.aml} /efi/dsdt.aml
+      fi
+    '';
+  };
 
   # 兜底：开机再校验一次，防止某次 rebuild 漏签
   systemd.services.sign-grub = {
