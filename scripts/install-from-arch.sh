@@ -6,15 +6,28 @@ set -euo pipefail
 DISK=/dev/nvme0n1p1
 ESP=/dev/sdb1
 TARGET=/mnt
-REPO=/mnt/repos/nixos-config
+REPO_SRC=/mnt/repos/nixos-config
+REPO=/run/nixos-config
 
 msg() { printf '\n\033[1;36m==> %s\033[0m\n' "$*"; }
 die() { printf '\033[1;31m错误: %s\033[0m\n' "$*" >&2; exit 1; }
 
+cleanup() {
+  set +e
+  mountpoint -q "$TARGET" && umount -R "$TARGET"
+  mountpoint -q "$REPO" && umount "$REPO"
+}
+trap cleanup EXIT
+
 # ---------------------------------------------------------------- 前置检查
 msg "前置检查"
 mountpoint -q /nix || die "/nix 未挂载（先跑 prepare-nix.sh）"
-[ -f "$REPO/flake.nix" ] || die "找不到 $REPO"
+[ -f "$REPO_SRC/flake.nix" ] || die "找不到 $REPO_SRC"
+
+# 挂载 @nixos 会遮住 /mnt，先把仓库 bind 到 /run
+mkdir -p "$REPO"
+mountpoint -q "$REPO" || mount --bind "$REPO_SRC" "$REPO"
+[ -f "$REPO/flake.nix" ] || die "仓库 bind 失败"
 
 # Arch 上没有 nixos-install，从 store 里取
 NIXOS_INSTALL_PKG=$(/usr/bin/nix build --no-link --print-out-paths nixpkgs#nixos-install)
@@ -23,16 +36,17 @@ export PATH="$NIXOS_INSTALL_PKG/bin:$NIXOS_ENTER_PKG/bin:$PATH"
 
 if mountpoint -q "$TARGET"; then die "$TARGET 已被占用"; fi
 
-# @nixos 必须是空的，防止覆盖已有安装
+# @nixos 里若有已完成的安装则终止；只允许空的挂载点目录残留
 mkdir -p /tmp/nixos-check
 mount -o subvol=@nixos "$DISK" /tmp/nixos-check
-if [ -n "$(ls -A /tmp/nixos-check)" ]; then
+if [ -e /tmp/nixos-check/etc/NIXOS ] && [ "${FORCE:-0}" != "1" ]; then
   umount /tmp/nixos-check
-  die "@nixos 非空，已存在安装，终止"
+  die "@nixos 已存在安装；确认要覆盖请用 FORCE=1 重跑"
 fi
+find /tmp/nixos-check -mindepth 1 -type d -empty -delete 2>/dev/null || true
 umount /tmp/nixos-check
 rmdir /tmp/nixos-check
-echo "    @nixos 为空，可以安装"
+echo "    @nixos 无已有安装，可以继续"
 
 # ---------------------------------------------------------------- 挂载目标
 msg "挂载目标子卷"
@@ -96,7 +110,7 @@ cat <<EOF
 安装完成。重启前请注意：
   1. 固件启动顺序里找 "NixOS-efi"（不是 GRUB）作为第一项；
   2. 首次启动若失败，用 F12 选回 GRUB 进 Arch，数据未动；
-  3. 卸载目标：sudo umount -R $TARGET
+  3. 目标子卷已自动卸载。
 
 重启后可执行：
   sudo reboot

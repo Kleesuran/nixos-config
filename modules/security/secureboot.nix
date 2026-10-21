@@ -13,11 +13,18 @@ let
 
     [ -f "$key" ] || { echo "sbctl 密钥不存在，跳过签名"; exit 0; }
 
-    for f in /efi/EFI/*/grubx64.efi /efi/EFI/BOOT/BOOTX64.EFI; do
+    for f in /efi/EFI/NixOS*/grubx64.efi /efi/EFI/nixos*/grubx64.efi /efi/EFI/BOOT/BOOTX64.EFI; do
       [ -f "$f" ] || continue
+
+      # 已由本密钥签过就跳过，避免反复追加签名
+      if ${pkgs.sbsigntool}/bin/sbverify --cert "$cert" "$f" >/dev/null 2>&1; then
+        echo "already signed: $f"
+        continue
+      fi
+
       tmp="$f.signed"
       ${pkgs.sbsigntool}/bin/sbsign --key "$key" --cert "$cert" --output "$tmp" "$f"
-      mv "$tmp" "$f"
+      ${pkgs.coreutils}/bin/mv "$tmp" "$f"
       echo "signed: $f"
     done
   '';
