@@ -7,6 +7,14 @@
 let
   espUuid = "9C35-4F77";
   rootUuid = "724b4e5f-3e76-4ac0-8ed7-ea74201deee2";
+
+  # 内核只从「未压缩」的 early initramfs 里读 ACPI 覆盖表，
+  # 所以必须用 boot.initrd.prepend，不能塞进压缩的 initrd。
+  acpiOverride = pkgs.runCommand "acpi-dsdt-initrd" { } ''
+    mkdir -p kernel/firmware/acpi
+    cp ${../../firmware/dsdt.aml} kernel/firmware/acpi/dsdt.aml
+    find kernel | ${pkgs.cpio}/bin/cpio -o -H newc --quiet > $out
+  '';
 in
 {
   boot = {
@@ -19,7 +27,7 @@ in
     ];
 
     # 修复 TC-O4M 主板 PEGP._DSM 死循环，否则启动卡 30 秒
-    initrd.extraFiles."/kernel/firmware/acpi/dsdt.aml".source = ../../firmware/dsdt.aml;
+    initrd.prepend = [ acpiOverride ];
 
     loader = {
       timeout = 5;

@@ -13,6 +13,11 @@
 
   programs.dconf.enable = true;
 
+  services.upower.enable = true;
+  services.fwupd.enable = true;
+  services.udisks2.enable = true;
+  services.gvfs.enable = true;
+
   environment.systemPackages = with pkgs; [
     kdePackages.kwallet
     kdePackages.kwalletmanager
