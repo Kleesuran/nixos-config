@@ -8,6 +8,10 @@ let
   espUuid = "9C35-4F77";
   rootUuid = "724b4e5f-3e76-4ac0-8ed7-ea74201deee2";
 
+  # GRUB 2.14 在 --disable-shim-lock 下仍要求有验证器处理动态模块，
+  # 并把 normal 等菜单所需模块一起装进已签名的核心，避免从 /boot 动态加载。
+  grubModules = "normal tpm linux boot btrfs part_gpt fat acpi chain configfile loadenv search search_fs_uuid search_label test echo font gfxterm png efi_gop efi_uga all_video gfxmenu gfxterm_background minicmd ext2 xfs ntfs zstd efifwsetup halt reboot sleep gettext";
+
   # 内核只从「未压缩」的 early initramfs 里读 ACPI 覆盖表，
   # 所以必须用 boot.initrd.prepend，不能塞进压缩的 initrd。
   acpiOverride = pkgs.runCommand "acpi-dsdt-initrd" { } ''
@@ -43,16 +47,20 @@ in
         efiSupport = true;
         efiInstallAsRemovable = false;
 
-        default = "saved";
+        # 固件验证已签名的 grubx64.efi；核心内置 tpm 验证器和常用模块，
+        # 因此在无 shim 的 Secure Boot 下不会再因 normal.mod 未验证而进 rescue。
+        extraGrubInstallArgs = [
+          "--disable-shim-lock"
+          "--modules=${grubModules}"
+        ];
+
+        # 不能用 "saved"：GRUB 的 btrfs 驱动没有实现 read_hook，save_env 收集
+        # 不到 blocklist，每次 savedefault 都会报 "sparse file not allowed"
+        # 并中断菜单项（与 grubenv 是否内联/压缩无关）。
+        default = "NixOS";
         configurationLimit = 5;
 
         extraConfig = ''
-          # 下面的自定义菜单项排在 NixOS 之前，首次安装时 saved_entry 为空，
-          # 不指定的话默认会落到第一个条目（Windows）。
-          if [ -z "''${saved_entry}" ]; then
-            set default="NixOS"
-          fi
-
           # ---------------------------------------------------------------
           # Windows：GRUB 注入 ACPI 表后再交给 Windows Boot Manager
           # ---------------------------------------------------------------

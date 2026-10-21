@@ -11,6 +11,16 @@ let
     "ssd"
     "discard=async"
   ];
+
+  # GRUB 直接从 btrfs 读取 grubenv；内联或压缩 extent 会让 GRUB 2.14 的
+  # loadenv 报 "sparse file not allowed"，所以 /boot 单独禁用压缩和内联。
+  btrfsBoot = [
+    "subvol=@boot"
+    "max_inline=0"
+    "noatime"
+    "ssd"
+    "discard=async"
+  ];
 in
 {
   fileSystems = {
@@ -30,7 +40,7 @@ in
     "/boot" = {
       device = disk;
       fsType = "btrfs";
-      options = btrfs "@boot";
+      options = btrfsBoot;
       neededForBoot = true;
     };
 
