@@ -1,0 +1,5 @@
+{
+  imports = [
+    ./secureboot.nix
+  ];
+}
