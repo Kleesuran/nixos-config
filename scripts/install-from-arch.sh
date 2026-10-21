@@ -84,10 +84,18 @@ nixos-install --flake "$REPO#legion-t5" --no-root-passwd
 msg "同步 klee 的密码哈希"
 HASH=$(getent shadow klee | cut -d: -f2)
 if [ -n "$HASH" ] && [ "${HASH:0:1}" != "!" ]; then
-  mkdir -p "$TARGET/tmp"
-  printf 'klee:%s\n' "$HASH" > "$TARGET/tmp/klee.pw"
-  nixos-enter --root "$TARGET" -c 'chpasswd -e < /tmp/klee.pw && rm -f /tmp/klee.pw'
-  echo "    已使用 Arch 现有密码"
+  python3 - "$TARGET/etc/shadow" "$HASH" <<'PY'
+import sys
+path, h = sys.argv[1], sys.argv[2]
+lines = open(path).read().splitlines()
+for i, l in enumerate(lines):
+    if l.startswith("klee:"):
+        f = l.split(":")
+        f[1] = h
+        lines[i] = ":".join(f)
+open(path, "w").write("\n".join(lines) + "\n")
+print("    klee 的密码哈希已同步")
+PY
 else
   echo "    跳过（Arch 上的 klee 无可用密码哈希）"
 fi
