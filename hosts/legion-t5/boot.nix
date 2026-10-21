@@ -6,7 +6,6 @@
 
 let
   espUuid = "9C35-4F77";
-  rootUuid = "724b4e5f-3e76-4ac0-8ed7-ea74201deee2";
 
   # GRUB 2.14 在 --disable-shim-lock 下仍要求有验证器处理动态模块，
   # 并把 normal 等菜单所需模块一起装进已签名的核心，避免从 /boot 动态加载。
@@ -47,8 +46,8 @@ in
         efiSupport = true;
         efiInstallAsRemovable = false;
 
-        # 固件验证已签名的 grubx64.efi；核心内置 tpm 验证器和常用模块，
-        # 因此在无 shim 的 Secure Boot 下不会再因 normal.mod 未验证而进 rescue。
+        # 自定义 core 由 modules/security/secureboot.nix 安装并签名，
+        # 这里保留 stock 安装参数只是为了 grub-install 仍能生成完整的 /boot 结构。
         extraGrubInstallArgs = [
           "--disable-shim-lock"
           "--modules=${grubModules}"
@@ -60,7 +59,8 @@ in
         default = "NixOS";
         configurationLimit = 5;
 
-        extraConfig = ''
+        # extraEntries 默认排在默认 NixOS 条目之后，保证 NixOS 是第一项。
+        extraEntries = ''
           # ---------------------------------------------------------------
           # Windows：GRUB 注入 ACPI 表后再交给 Windows Boot Manager
           # ---------------------------------------------------------------
@@ -72,16 +72,6 @@ in
             search --no-floppy --fs-uuid --set=root ${espUuid}
             acpi /dsdt.aml
             chainloader /EFI/Microsoft/Boot/bootmgfw.efi
-          }
-
-          # ---------------------------------------------------------------
-          # 过渡期：链到 Arch 自己的 grub.cfg，Arch 更新内核后无需改这边
-          # ---------------------------------------------------------------
-          menuentry "Arch Linux (legacy)" --class arch --class os {
-            insmod part_gpt
-            insmod btrfs
-            search --no-floppy --fs-uuid --set=root ${rootUuid}
-            configfile /@/boot/grub/grub.cfg
           }
 
           menuentry "UEFI Firmware Settings" --class efi {

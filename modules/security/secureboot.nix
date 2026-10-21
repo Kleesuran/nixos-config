@@ -5,6 +5,37 @@
 { pkgs, ... }:
 
 let
+  # 从原 Arch 定制 GRUB 里取出的、去掉了 lockdown 注册的 acpi 模块，
+  # 与 stock GRUB 2.14 模块重新打包成这个 core。详见 firmware/grub-custom/README.md。
+  customGrub = ../../firmware/grub-custom/core.efi;
+
+  installCustomGrub = pkgs.writeShellScript "install-custom-grub" ''
+    set -eu
+
+    dst=/efi/EFI/NixOS-efi/grubx64.efi
+    key=/var/lib/sbctl/keys/db/db.key
+    cert=/var/lib/sbctl/keys/db/db.pem
+
+    [ -d /efi/EFI ] || { echo "/efi 未挂载，跳过自定义 GRUB"; exit 0; }
+
+    tmp="$dst.tmp"
+    ${pkgs.coreutils}/bin/install -Dm644 ${customGrub} "$tmp"
+
+    if [ ! -f "$key" ]; then
+      echo "sbctl 密钥不存在，保留 stock GRUB"
+      ${pkgs.coreutils}/bin/rm -f "$tmp"
+      exit 0
+    fi
+
+    # 先签临时文件并验证，成功后才替换，避免把未签名/损坏的核心写到 ESP
+    ${pkgs.sbsigntool}/bin/sbsign --key "$key" --cert "$cert" \
+      --output "$tmp.signed" "$tmp"
+    ${pkgs.sbsigntool}/bin/sbverify --cert "$cert" "$tmp.signed" >/dev/null
+    ${pkgs.coreutils}/bin/mv "$tmp.signed" "$dst"
+    ${pkgs.coreutils}/bin/rm -f "$tmp"
+    echo "installed custom GRUB: $dst"
+  '';
+
   signGrub = pkgs.writeShellScript "sign-grub" ''
     set -eu
 
@@ -56,6 +87,7 @@ let
 in
 {
   boot.loader.grub.extraInstallCommands = ''
+    ${installCustomGrub}
     ${signGrub}
     ${signKernels}
   '';
