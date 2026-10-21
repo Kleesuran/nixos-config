@@ -2,6 +2,9 @@
 { pkgs, ... }:
 
 {
+  # 交互式 shell；用户登录 shell 仍是 bash（见 modules/core/users.nix）
+  programs.fish.enable = true;
+
   environment.systemPackages = with pkgs; [
     # 基础
     git
