@@ -6,7 +6,7 @@
     noto-fonts
     noto-fonts-cjk-sans
     noto-fonts-cjk-serif
-    noto-fonts-emoji
+    noto-fonts-color-emoji
     wqy_zenhei
     dejavu_fonts
     liberation_ttf

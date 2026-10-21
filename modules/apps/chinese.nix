@@ -5,8 +5,8 @@
   environment.systemPackages = with pkgs; [
     google-chrome
     chromium
-    linuxqq
-    onlyoffice-bin
+    qq
+    onlyoffice-desktopeditors
     obsidian
   ];
 }

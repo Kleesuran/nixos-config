@@ -27,7 +27,7 @@ in
     ];
 
     # 修复 TC-O4M 主板 PEGP._DSM 死循环，否则启动卡 30 秒
-    initrd.prepend = [ acpiOverride ];
+    initrd.prepend = [ "${acpiOverride}" ];
 
     loader = {
       timeout = 5;
