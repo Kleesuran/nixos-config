@@ -64,6 +64,10 @@
 
 - 打包时会删除 `@img/sharp-*-musl*` 等 musl 可选模块，避免 `autoPatchelf`
   去找 musl libc；新版本如果新增平台目录，先看 `nixos-rebuild` 的报错再补清理。
+- `resources/umid/runtime-info` 被 autoPatchelf 改写后 PT_DYNAMIC 落在只读段，
+  启动时 SIGSEGV，drkonqi 每次都会弹崩溃报告（主程序不受影响）。`preFixup`
+  里把 `pkgs/fix-elf-load-flags.py` 追加到 `postFixupHooks` 末尾修正段权限；
+  升级后如果内核/patchelf 行为变化，先手动跑一次 `runtime-info 0` 确认退出码为 0。
 - Qoder 的命令行工具是另一套（`~/.qoder-cn/bin/qoderclicn`，`~/.local/bin/qoder`
   指向它），不由这个包管理。
 - 需要 `nixpkgs.config.allowUnfree = true`（已在 `modules/core/nix.nix` 设置）。

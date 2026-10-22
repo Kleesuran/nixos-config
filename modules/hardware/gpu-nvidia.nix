@@ -9,7 +9,7 @@ let
     mkdir -p $out/bin
     cp ${config.hardware.nvidia.package.bin}/bin/nvidia-smi $out/bin/nvidia-smi
     chmod u+w $out/bin/nvidia-smi
-    ${pkgs.python3}/bin/python3 ${./fix-nvidia-smi.py} $out/bin/nvidia-smi
+    ${pkgs.python3}/bin/python3 ${../../pkgs/fix-elf-load-flags.py} $out/bin/nvidia-smi
     chmod 0555 $out/bin/nvidia-smi
   '';
 in

@@ -26,6 +26,7 @@
   nspr,
   nss,
   pango,
+  python3,
   systemd,
   vulkan-loader,
   xdg-utils,
@@ -132,6 +133,20 @@ stdenv.mkDerivation (finalAttrs: {
       --prefix LD_LIBRARY_PATH : "$out/opt/Qoder CN:${lib.makeLibraryPath finalAttrs.buildInputs}" \
       --prefix PATH : "${lib.makeBinPath [ xdg-utils ]}" \
       --add-flags "--password-store=kwallet6"
+  '';
+
+  # resources/umid/runtime-info 被 autoPatchelf 改写后，PT_DYNAMIC 落在只读的
+  # PT_LOAD 里，ld.so 启动时写 DT_DEBUG 就 SIGSEGV。主程序不受影响，但每次启动
+  # 都会让 drkonqi 弹一条崩溃报告。
+  # autoPatchelfHook 自己也是在 postFixup 里改 ELF，且排在 derivation 的
+  # postFixup 之后，所以这里把补丁追加到 postFixupHooks 末尾，确保最后执行。
+  preFixup = ''
+    _fixRuntimeInfoElf() {
+      chmod u+w "$out/opt/Qoder CN/resources/umid/runtime-info"
+      ${python3}/bin/python3 ${../../pkgs/fix-elf-load-flags.py} \
+        "$out/opt/Qoder CN/resources/umid/runtime-info"
+    }
+    postFixupHooks+=(_fixRuntimeInfoElf)
   '';
 
   meta = {
