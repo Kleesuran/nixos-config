@@ -53,6 +53,14 @@
     Hidden=true
   '';
 
+  # Rime 只托管「只读输入」：全局补丁与自定义短语。
+  # build/、userdb/、user.yaml、installation.yaml、sync/ 都是运行时状态，不接管，
+  # 否则 Rime 写入时会撞上只读的 store 软链。
+  xdg.dataFile = {
+    "fcitx5/rime/default.custom.yaml".source = ./rime/default.custom.yaml;
+    "fcitx5/rime/custom_phrase.txt".source = ./rime/custom_phrase.txt;
+  };
+
   systemd.user.services.protonplus = {
     Unit.Description = "ProtonPlus runner update";
     Service = {

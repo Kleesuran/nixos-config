@@ -1,0 +1,5 @@
+# Rime 全局补丁（由 home-manager 以只读软链投放到 ~/.local/share/fcitx5/rime/）
+# 运行时生成的 build/、userdb/、user.yaml 等不在此管理。
+patch:
+  "menu/page_size": 9
+  __include: rime_ice_suggestion:
