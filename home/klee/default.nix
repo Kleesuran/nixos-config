@@ -46,12 +46,34 @@
 
   # KDE 自带 org.kde.plasma.bluetooth 托盘图标已经够用；
   # 屏蔽 Blueman 的重复图标，但保留 blueman 包，blueman-manager 仍可手动启动。
-  xdg.configFile."autostart/blueman.desktop".text = ''
-    [Desktop Entry]
-    Type=Application
-    Name=Blueman Applet
-    Hidden=true
-  '';
+  xdg.configFile = {
+    "autostart/blueman.desktop".text = ''
+      [Desktop Entry]
+      Type=Application
+      Name=Blueman Applet
+      Hidden=true
+    '';
+
+    # fish 只接管 config.fish；conf.d/、completions/、fish_variables 属于运行时状态
+    "fish/config.fish".source = ./fish/config.fish;
+    "git/ignore".source = ./git/ignore;
+  };
+
+  # git 的全局配置（用户名/邮箱/凭据助手）。SSH 私钥和任何 token 都不进仓库。
+  programs.git = {
+    enable = true;
+    settings = {
+      user = {
+        name = "Kleesuran";
+        email = "attnia@outlook.com";
+      };
+      init.defaultBranch = "main";
+      core.editor = "nvim";
+      # 空值先清掉继承来的 helper 列表，再挂 gh
+      credential."https://github.com".helper = [ "" "!${pkgs.gh}/bin/gh auth git-credential" ];
+      credential."https://gist.github.com".helper = [ "" "!${pkgs.gh}/bin/gh auth git-credential" ];
+    };
+  };
 
   # Rime 只托管「只读输入」：全局补丁与自定义短语。
   # build/、userdb/、user.yaml、installation.yaml、sync/ 都是运行时状态，不接管，
