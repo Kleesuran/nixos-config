@@ -32,7 +32,7 @@ firmware/dsdt.aml            # TC-O4M 主板 ACPI 修复表
 | `@boot` | `/boot` | NixOS 新建 |
 | `@home` | `/home` | 与 Arch 共用 |
 | `@steam` `@containers` `@repos` `@vms` | `/mnt/*` | 与 Arch 共用 |
-| `@` | — | Arch 根，验收后删除 |
+| `@` `@pkg` `@log` | — | Arch 根/包缓存/日志，已于 2026-10-22 删除 |
 
 ESP（`sdb1`）挂 `/efi`，只放 `grubx64.efi` 与 `dsdt.aml`，内核在 `@boot`。
 
@@ -109,11 +109,12 @@ sudo nixos-install --flake /mnt/mnt/repos/nixos-config#legion-t5 --no-root-passw
 
 ## 回退
 
-未删除 `@` 之前，GRUB 菜单里的 “Arch Linux (legacy)” 可回 Arch。
-验收全部通过后再执行：
+Arch 根子卷 `@`、包缓存 `@pkg`、日志 `@log` 及 Arch 期的根快照已于
+2026-10-22 删除，**无法再回到 Arch**。删除前的残留配置留在：
 
-```bash
-sudo mount -o subvolid=5 /dev/nvme0n1p1 /mnt
-sudo btrfs subvolume delete /mnt/@ /mnt/@pkg /mnt/@log
-# @home 与 @steam 等是共用的，不要删
-```
+- `/mnt/data/ARCH_MIGRATION_BACKUP_20261001/arch-etc-root-20261022.tar.zst`
+  （Arch 的 `/etc` 与 `/root`）
+- 同目录 `pacman-packages-20261022.txt`（1652 个包的名-版本清单）
+
+现在的回退手段是 NixOS 自己的 generation：`nixos-rebuild --rollback switch`，
+或开机时在 GRUB 里选上一个 generation。

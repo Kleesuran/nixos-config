@@ -31,11 +31,13 @@
 | `@boot` | `/boot` | 内核、initrd、grub.cfg |
 | `@home` | `/home` | **与 Arch 共用** |
 | `@steam` `@containers` `@repos` `@vms` | `/mnt/steam` 等 | 与 Arch 共用 |
-| `@` `@pkg` `@log` | — | Arch 根，验收后再删 |
+| `@` `@pkg` `@log` | — | Arch 根，2026-10-22 已删除 |
 
 ## 三、起不来时的第一反应
 
-1. **先别重装。** 开机按 `F12`，选 `GRUB`，进 Arch。数据全在。
+1. **先别重装。** Arch 已于 2026-10-22 删除，回退只能靠 NixOS 的
+   generation：GRUB 菜单里选上一个 generation，或进系统后
+   `nixos-rebuild --rollback switch`。数据在 `@home`，不会丢。
 2. 如果能进 GRUB 菜单但 NixOS 起不来，按 `e` 编辑启动项，在 `linux` 行末尾加参数：
    - NVIDIA 黑屏：`nomodeset`
    - 想进文本模式排查：`systemd.unit=multi-user.target`
