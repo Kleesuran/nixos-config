@@ -1,0 +1,10 @@
+# 示例配置
+theme = Catppuccin Mocha
+#font-family = "JetBrains Mono"
+font-size = 14
+background-opacity = 0.9
+
+# 快捷键映射 (keybind = 快捷键=动作)
+keybind = super+shift+r=reload_config
+keybind = ctrl+d=new_split:right
+

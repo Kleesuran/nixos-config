@@ -57,6 +57,16 @@
     # fish 只接管 config.fish；conf.d/、completions/、fish_variables 属于运行时状态
     "fish/config.fish".source = ./fish/config.fish;
     "git/ignore".source = ./git/ignore;
+
+    # 手工编辑的只读配置。btop 若在界面里改设置会尝试回写，需改为改仓库；
+    # kitty/ghostty 只读配置，状态在 ~/.local/state。
+    "starship.toml".source = ./starship/starship.toml;
+    "starship_kde.toml".source = ./starship/starship_kde.toml;
+    "kitty".source = ./kitty;
+    "ghostty".source = ./ghostty;
+    # 只接管 init.lua，nvim-pack-lock.json 由 vim.pack 自行维护
+    "nvim/init.lua".source = ./nvim/init.lua;
+    "btop/btop.conf".source = ./btop/btop.conf;
   };
 
   # git 的全局配置（用户名/邮箱/凭据助手）。SSH 私钥和任何 token 都不进仓库。
