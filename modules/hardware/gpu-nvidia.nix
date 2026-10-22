@@ -19,6 +19,8 @@ in
   hardware.graphics = {
     enable = true;
     enable32Bit = true; # Steam 的 32 位游戏
+    # VA-API 解码（OpenUUYC 主控端用 H.264 硬解）
+    extraPackages = [ pkgs.nvidia-vaapi-driver ];
   };
 
   hardware.nvidia = {
@@ -53,6 +55,7 @@ in
 
   environment.sessionVariables = {
     LIBVA_DRIVER_NAME = "nvidia";
+    NVD_BACKEND = "direct";
     GBM_BACKEND = "nvidia-drm";
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     NIXOS_OZONE_WL = "1";

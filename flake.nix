@@ -22,6 +22,7 @@
         rea-agents = final.callPackage ./pkgs/rea-agents { };
         qoder-cn = final.callPackage ./pkgs/qoder-cn { };
         workbuddy = final.callPackage ./pkgs/workbuddy { };
+        openuuyc = final.callPackage ./pkgs/openuuyc { };
 
         # nixpkgs 自带 1.4.1，但上游下载站不可达；本地 AUR 缓存里有 1.4.2。
         antigravity-cli = prev.antigravity-cli.overrideAttrs (old: {
@@ -60,6 +61,10 @@
     in
     {
       inherit overlays;
+
+      # 方便单独构建/迭代：nix build .#openuuyc
+      packages.x86_64-linux.openuuyc =
+        nixpkgs.legacyPackages.${system}.callPackage ./pkgs/openuuyc { };
 
       nixosConfigurations = {
         legion-t5 = mkHost "legion-t5";
