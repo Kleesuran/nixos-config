@@ -14,8 +14,12 @@
       enable = true;
       allowedTCPPorts = [
         6443 # k3s API
+        53317 # LocalSend（传输）
         7890 # mihomo mixed-port
         8080 # 可选 LAN 代理
+      ];
+      allowedUDPPorts = [
+        53317 # LocalSend（组播发现 + 传输）
       ];
       trustedInterfaces = [
         "cni0"

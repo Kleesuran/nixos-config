@@ -1,7 +1,7 @@
 {
   imports = [
     ./k3s.nix
-    ./proxy.nix
+    ./mihomo.nix
     ./printing.nix
   ];
 }

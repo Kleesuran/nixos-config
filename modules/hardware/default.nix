@@ -5,5 +5,6 @@
     ./audio.nix
     ./bluetooth.nix
     ./network.nix
+    ./storage.nix
   ];
 }

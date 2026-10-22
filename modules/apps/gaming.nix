@@ -17,6 +17,7 @@
     lutris
     wine
     winetricks
-    protonup-ng
+    protonplus
+    hmcl
   ];
 }

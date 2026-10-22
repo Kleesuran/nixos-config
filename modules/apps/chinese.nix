@@ -6,6 +6,7 @@
     google-chrome
     chromium
     qq
+    wechat
     onlyoffice-desktopeditors
     obsidian
   ];

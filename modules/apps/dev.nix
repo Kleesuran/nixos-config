@@ -28,6 +28,8 @@
     tmux
     ghostty
     kitty
+    qoder-cn
+    workbuddy
 
     # 语言运行时
     nodejs_22

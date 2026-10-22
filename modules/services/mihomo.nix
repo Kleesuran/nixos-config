@@ -1,14 +1,21 @@
-# mihomo TUN 模式透明代理
-# 配置文件不入库：放在 /etc/mihomo/config.yaml（首次用 activation 外的命令部署）
+# mihomo（Clash Meta）透明代理
+# 配置不入库：/etc/mihomo/config.yaml 由 `mihomo-try` 校验后部署
+# TUN 由配置文件的 tun: 段开启，服务已授予 CAP_NET_ADMIN
 { pkgs, ... }:
 
 {
+  environment.systemPackages = [ pkgs.mihomo ];
+
+  # TUN 模式（/dev/net/tun）：确保开机加载 tun 模块
+  boot.kernelModules = [ "tun" ];
+
   systemd.tmpfiles.rules = [
     "d /etc/mihomo 0750 root root -"
   ];
 
   systemd.services.mihomo = {
     description = "mihomo (Clash Meta) transparent proxy";
+    documentation = [ "https://wiki.metacubex.one/" ];
     after = [ "network-online.target" ];
     wants = [ "network-online.target" ];
     wantedBy = [ "multi-user.target" ];
@@ -33,6 +40,7 @@
 
       LimitNOFILE = 65535;
       NoNewPrivileges = true;
+      UMask = "0077";
     };
   };
 
