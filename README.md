@@ -20,7 +20,7 @@ modules/
   services/                  # k3s、proxy、printing
   security/                  # Secure Boot 重签
 home/klee/                   # home-manager（只做新增，不覆盖 Arch 的文件）
-pkgs/                        # 自打包：qoder-cn、workbuddy、openuuyc、liblhdcv5、pipewire-lhdc…
+pkgs/                        # 自打包：qoder-cn、qoder-cli、codebuddy、workbuddy、openuuyc、liblhdcv5、pipewire-lhdc…
 firmware/dsdt.aml            # TC-O4M 主板 ACPI 修复表
 ```
 
