@@ -14,12 +14,13 @@ hosts/legion-t5/
   boot.nix                   # GRUB、ACPI 注入、Secure Boot 菜单
 modules/
   core/                      # nix、locale、users
-  hardware/                  # cpu、nvidia、audio、bluetooth、network
+  hardware/                  # cpu、nvidia、audio、audio-lhdc、bluetooth、network
   desktop/                   # plasma、fonts、input-method、hyprland(可选)
   apps/                      # dev、gaming、chinese
   services/                  # k3s、proxy、printing
   security/                  # Secure Boot 重签
 home/klee/                   # home-manager（只做新增，不覆盖 Arch 的文件）
+pkgs/                        # 自打包：qoder-cn、workbuddy、openuuyc、liblhdcv5、pipewire-lhdc…
 firmware/dsdt.aml            # TC-O4M 主板 ACPI 修复表
 ```
 
@@ -35,6 +36,33 @@ firmware/dsdt.aml            # TC-O4M 主板 ACPI 修复表
 | `@` `@pkg` `@log` | — | Arch 根/包缓存/日志，已于 2026-10-22 删除 |
 
 ESP（`sdb1`）挂 `/efi`，只放 `grubx64.efi` 与 `dsdt.aml`，内核在 `@boot`。
+
+## 蓝牙 LHDC v5
+
+`pkgs/liblhdcv5`（AOSP 编码器）+ `pkgs/pipewire-lhdc`（给 PipeWire 1.6.9 打上游
+LHDC 补丁）+ `modules/hardware/audio-lhdc.nix`（把 `services.pipewire` 用到的
+pipewire / wireplumber 换成这份构建）。没有覆盖全局 `pkgs.pipewire`，避免 kwin、
+firefox 等依赖方全量重编译。
+
+验证：
+
+```bash
+wpctl inspect <sink-id> | grep api.bluez5.codec   # 应为 "lhdc_v5"
+grep lhdc /proc/$(pgrep -u klee -x wireplumber)/maps
+```
+
+质量默认 `auto`（按设备上报的 AVDTP 上限，通常是 400k），可把设备属性
+`bluez5.a2dp.lhdc.quality` 设为 `400k` / `500k` / `900k` / `1000k`；不稳就退回 `auto`。
+
+升级 `nixpkgs` 后先单独构建，别直接 switch：
+
+```bash
+nix build .#pipewire-lhdc
+```
+
+补丁是对着 1.6.9 生成的，上游相关文件一变就会在这里失败。若新版 PipeWire 已自带
+`bluez5-codec-lhdc`，删掉 `pkgs/pipewire-lhdc` 与 `modules/hardware/audio-lhdc.nix`，
+只保留 `liblhdcv5` 即可。
 
 ## 安装
 
@@ -102,6 +130,7 @@ sudo nixos-install --flake /mnt/mnt/repos/nixos-config#legion-t5 --no-root-passw
 - [ ] `sudo sbctl verify` 全部 signed，`systemctl status sign-grub` 成功
 - [ ] `nvidia-smi` 正常，Plasma Wayland 会话可登录
 - [ ] 声音、Wi-Fi、蓝牙耳机、打印机
+- [ ] 蓝牙耳机 `wpctl inspect <sink>` 显示 `api.bluez5.codec = "lhdc_v5"`
 - [ ] fcitx5 输入法（Rime）可切换
 - [ ] Steam 添加 `/mnt/steam/SteamLibrary` 后游戏可启动
 - [ ] `kubectl get nodes` 为 Ready

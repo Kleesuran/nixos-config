@@ -119,6 +119,7 @@ sudo btrfs subvolume delete /mnt/@nixos /mnt/@nix /mnt/@boot
 | `root=fstab` 挂载失败进 emergency | 子卷没建/挂载参数错 | 检查子卷名与 `/etc/fstab` |
 | 无法登录 | shadow 没密码 | Live 里改 `/mnt/etc/shadow` 或用 `passwd` |
 | Windows 蓝屏/黑屏 | 走了非注入条目 | 必须用 `Windows 10/11 (ACPI Inject)` |
+| 蓝牙耳机只有 SBC，没有 `lhdc_v5` | LHDC 补丁没编进去，或 wireplumber 没换 | 先 `nix build .#pipewire-lhdc`；再确认 `grep lhdc /proc/$(pgrep -u klee -x wireplumber)/maps` 能看到 `libspa-codec-bluez5-lhdc.so` 和 `liblhdcv5.so` |
 
 ## 七、把这段发给 AI 继续排查
 
@@ -142,7 +143,7 @@ ACPI 补丁 dsdt.aml 已复制到 /efi/dsdt.aml，Linux 侧用 boot.initrd.prepe
 - 机器上：`/mnt/repos/nixos-config`（btrfs `@repos`，和 Arch 共用）
 - 校验：`cd nixos-config && git log --oneline`
 - 关键模块：`hosts/legion-t5/boot.nix`（引导/ACPI）、`modules/security/secureboot.nix`（签名）、
-  `hosts/legion-t5/disk.nix`（子卷）
+  `hosts/legion-t5/disk.nix`（子卷）、`modules/hardware/audio-lhdc.nix`（蓝牙 LHDC）
 
 U 盘是 exFAT，两个限制：
 
