@@ -21,9 +21,13 @@
     procs
     aliyun-cli
     antigravity-cli
-    claude-code
+    codebuddy
+    codex
     google-cloud-sdk
     grok-build
+    nfpm
+    opencode
+    qoder-cli
     rea-agents
     (writeShellApplication {
       name = "mihomo-try";
