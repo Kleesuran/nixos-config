@@ -23,6 +23,8 @@
         openlogi = final.callPackage ./pkgs/openlogi { };
         rea-agents = final.callPackage ./pkgs/rea-agents { };
         qoder-cn = final.callPackage ./pkgs/qoder-cn { };
+        qoder-cli = final.callPackage ./pkgs/qoder-cli { };
+        codebuddy = final.callPackage ./pkgs/codebuddy { };
         workbuddy = final.callPackage ./pkgs/workbuddy { };
         openuuyc = final.callPackage ./pkgs/openuuyc { };
 
@@ -67,6 +69,12 @@
       # 方便单独构建/迭代：nix build .#openuuyc
       packages.x86_64-linux.openuuyc =
         nixpkgs.legacyPackages.${system}.callPackage ./pkgs/openuuyc { };
+
+      packages.x86_64-linux.codebuddy =
+        nixpkgs.legacyPackages.${system}.callPackage ./pkgs/codebuddy { };
+
+      packages.x86_64-linux.qoder-cli =
+        nixpkgs.legacyPackages.${system}.callPackage ./pkgs/qoder-cli { };
 
       packages.x86_64-linux.liblhdcv5 =
         (nixpkgs.legacyPackages.${system}.extend overlays.default).liblhdcv5;
