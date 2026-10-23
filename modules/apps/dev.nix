@@ -45,11 +45,66 @@
     cmake
     pkg-config
 
-    # 容器 / K8s
+    # 容器（podman 本体由 modules/services/podman.nix 提供）
+    buildah
+    skopeo
+    dive
+    hadolint
+    nerdctl
+    docker-compose
+
+    # K8s
     kubectl
     kubernetes-helm
     k9s
+    kustomize
+    kubectx
+    stern
+    kubeseal
+    kubeconform
+    helmfile
+    kube-linter
+    k3d # 本地一次性集群；需要 user 级 podman.socket
     ansible
+
+    # IaC
+    opentofu # terraform 的 Apache 分支，功能等价
+    terragrunt
+    tflint
+    terraform-docs
+    terraform-ls
+
+    # 配置管理
+    ansible-lint
+    molecule
+    ansible-language-server
+
+    # CI/CD
+    act
+    skaffold
+    tilt
+    gitlab-runner
+
+    # 云 CLI
+    awscli2
+    # azure-cli 暂缺：它依赖 python3.14-fabric，当前 nixpkgs 里该包被标记 broken
+
+    # 供应链安全 / Secret
+    trivy
+    syft
+    grype
+    cosign
+    sops
+    age
+    # checkov 暂缺：依赖链里带 python3.14-ecdsa（被标记 insecure），用 trivy config 代替
+    kube-bench
+    kubeaudit
+    popeye
+
+    # GitOps / 备份
+    argocd
+    fluxcd
+    velero
 
     # 系统
     pciutils

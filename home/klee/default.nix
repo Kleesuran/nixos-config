@@ -3,7 +3,7 @@
 # 家目录与 Arch 共用，这里只做「新增」：装包、设环境变量。
 # 不接管 Arch 已经在管理的文件（.config/fish、.config/nvim、KDE 配置等），
 # 否则切回 Arch 时会看到一堆 .hm-bak。
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   home.username = "klee";
@@ -47,6 +47,11 @@
     EDITOR = "nvim";
     PAGER = "less";
   };
+
+  # k3s 把 kubeconfig 写在 /etc/rancher/k3s/k3s.yaml（0644），直接软链过来，
+  # 证书轮换后自动跟随；不要复制，否则会变成过期副本。
+  home.file.".kube/config".source =
+    config.lib.file.mkOutOfStoreSymlink "/etc/rancher/k3s/k3s.yaml";
 
   # KDE 自带 org.kde.plasma.bluetooth 托盘图标已经够用；
   # 屏蔽 Blueman 的重复图标，但保留 blueman 包，blueman-manager 仍可手动启动。
