@@ -16,6 +16,8 @@
       system = "x86_64-linux";
 
       overlays.default = final: prev: {
+        liblhdcv5 = final.callPackage ./pkgs/liblhdcv5 { };
+        pipewire-lhdc = final.callPackage ./pkgs/pipewire-lhdc { };
         zedg = final.callPackage ./pkgs/zedg { };
         grok-build = final.callPackage ./pkgs/grok-build { };
         openlogi = final.callPackage ./pkgs/openlogi { };
@@ -65,6 +67,12 @@
       # 方便单独构建/迭代：nix build .#openuuyc
       packages.x86_64-linux.openuuyc =
         nixpkgs.legacyPackages.${system}.callPackage ./pkgs/openuuyc { };
+
+      packages.x86_64-linux.liblhdcv5 =
+        (nixpkgs.legacyPackages.${system}.extend overlays.default).liblhdcv5;
+
+      packages.x86_64-linux.pipewire-lhdc =
+        (nixpkgs.legacyPackages.${system}.extend overlays.default).pipewire-lhdc;
 
       nixosConfigurations = {
         legion-t5 = mkHost "legion-t5";
