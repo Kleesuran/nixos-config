@@ -1,5 +1,4 @@
 fish_add_path ~/.local/bin
-fish_add_path ~/.opencode-i18n/bin
 
 # Commands to run in interactive sessions can go here
 if status is-interactive
@@ -51,6 +50,3 @@ if status is-interactive
 end
 set -gx BUN_INSTALL "$HOME/.bun"
 set -gx PATH "$BUN_INSTALL/bin" $PATH
-
-# Added by Antigravity CLI installer
-set -gx PATH "/home/klee/.local/bin" $PATH
