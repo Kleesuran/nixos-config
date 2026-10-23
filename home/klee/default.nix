@@ -67,6 +67,15 @@
     # 只接管 init.lua，nvim-pack-lock.json 由 vim.pack 自行维护
     "nvim/init.lua".source = ./nvim/init.lua;
     "btop/btop.conf".source = ./btop/btop.conf;
+
+    # systemd 262 对 Type=notify-reload 会检查主进程的 SIGUSR2 handler，
+    # Ghostty 1.3.1 在装好 handler 之前就发了 READY=1，D-Bus 激活时约一半概率被判
+    # "lacks handler for reload signal USR2" 而拒绝启动（ghostty#14398）。
+    # 上游 1.4.0 才修，这里降成 notify 绕过；改配置仍用 super+shift+r。
+    "systemd/user/app-com.mitchellh.ghostty.service.d/10-no-notify-reload.conf".text = ''
+      [Service]
+      Type=notify
+    '';
   };
 
   # git 的全局配置（用户名/邮箱/凭据助手）。SSH 私钥和任何 token 都不进仓库。
