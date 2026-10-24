@@ -8,6 +8,18 @@
       url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # end4-pC：quickshell 外壳（illogical-impulse 分支）
+    end4-pC = {
+      url = "github:pctrade/end4-pC/cacaf5049dec31e023f2d39b24e22ce908ee9c56";
+      flake = false;
+    };
+
+    # end4-pC 依赖的底包配置（matugen / fuzzel / wlogout 等）
+    dots-hyprland = {
+      url = "github:end-4/dots-hyprland/2f2a376fdb2ad738bf55f693dd0b474b64bb0ab8";
+      flake = false;
+    };
   };
 
   outputs =

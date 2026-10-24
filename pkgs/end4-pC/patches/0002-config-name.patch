@@ -1,0 +1,62 @@
+diff --git a/scripts/colors/applycolor.sh b/scripts/colors/applycolor.sh
+index 2aab8df..62ecf54 100755
+--- a/scripts/colors/applycolor.sh
++++ b/scripts/colors/applycolor.sh
+@@ -1,6 +1,6 @@
+ #!/usr/bin/env bash
+ 
+-QUICKSHELL_CONFIG_NAME="ii"
++QUICKSHELL_CONFIG_NAME="end4-pC"
+ XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+ XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+ XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+diff --git a/scripts/colors/random/random_konachan_wall.sh b/scripts/colors/random/random_konachan_wall.sh
+index 0011924..a154355 100755
+--- a/scripts/colors/random/random_konachan_wall.sh
++++ b/scripts/colors/random/random_konachan_wall.sh
+@@ -17,7 +17,7 @@ get_pictures_dir() {
+     echo "$HOME/Pictures"
+ }
+ 
+-QUICKSHELL_CONFIG_NAME="ii"
++QUICKSHELL_CONFIG_NAME="end4-pC"
+ XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+ XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+ XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+diff --git a/scripts/colors/random/random_osu_wall.sh b/scripts/colors/random/random_osu_wall.sh
+index 54b3af6..b411de6 100755
+--- a/scripts/colors/random/random_osu_wall.sh
++++ b/scripts/colors/random/random_osu_wall.sh
+@@ -17,7 +17,7 @@ get_pictures_dir() {
+     echo "$HOME/Pictures"
+ }
+ 
+-QUICKSHELL_CONFIG_NAME="ii"
++QUICKSHELL_CONFIG_NAME="end4-pC"
+ XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+ XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+ XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+diff --git a/scripts/colors/switchwall.sh b/scripts/colors/switchwall.sh
+index 0a59f66..dd2bb99 100755
+--- a/scripts/colors/switchwall.sh
++++ b/scripts/colors/switchwall.sh
+@@ -1,6 +1,6 @@
+ #!/usr/bin/env bash
+ 
+-QUICKSHELL_CONFIG_NAME="ii"
++QUICKSHELL_CONFIG_NAME="end4-pC"
+ XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+ XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+ XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+diff --git a/scripts/kvantum/materialQT.sh b/scripts/kvantum/materialQT.sh
+index a049c55..928f2e5 100755
+--- a/scripts/kvantum/materialQT.sh
++++ b/scripts/kvantum/materialQT.sh
+@@ -1,6 +1,6 @@
+ #!/usr/bin/env bash
+ 
+-QUICKSHELL_CONFIG_NAME="ii"
++QUICKSHELL_CONFIG_NAME="end4-pC"
+ XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+ XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+ XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"

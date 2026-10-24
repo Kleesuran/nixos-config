@@ -1,5 +1,6 @@
-# Hyprland 作为可选会话，默认关闭；与 Plasma 并存
-{ config, lib, pkgs, ... }:
+# Hyprland 会话（end4-pC / illogical-impulse）
+# 具体 dotfiles 与用户级包在 home/klee/hyprland.nix 里
+{ config, lib, ... }:
 
 let
   cfg = config.my.hyprland;
@@ -10,18 +11,25 @@ in
   config = lib.mkIf cfg.enable {
     programs.hyprland = {
       enable = true;
-      withUWSM = true;
+      # end4-pC 的 execs.lua 自己处理 dbus 环境，先直接用 Hyprland 会话
+      withUWSM = false;
       xwayland.enable = true;
     };
 
-    environment.systemPackages = with pkgs; [
-      hyprpaper
-      hypridle
-      hyprlock
-      wl-clipboard
-      grim
-      slurp
-      fuzzel
-    ];
+    # SDDM 默认进入 Hyprland；Plasma 仍保留在会话列表里
+    services.displayManager.defaultSession = "hyprland";
+
+    # hyprlock 作为 end4 锁屏失败时的回退
+    security.pam.services.hyprlock = { };
+
+    # end4 天气/定位；demo agent 由模块自动装好
+    services.geoclue2.enable = true;
+
+    # end4 的剪贴板粘贴用 ydotool 模拟 Ctrl+V
+    hardware.uinput.enable = true;
+    programs.ydotool = {
+      enable = true;
+      group = "uinput";
+    };
   };
 }

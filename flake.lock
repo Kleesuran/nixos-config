@@ -1,5 +1,39 @@
 {
   "nodes": {
+    "dots-hyprland": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1791686915,
+        "narHash": "sha256-pYFIVjdqQLBO5yzK85aHMw5MJRRiypyd6wuAW9ixfCE=",
+        "owner": "end-4",
+        "repo": "dots-hyprland",
+        "rev": "2f2a376fdb2ad738bf55f693dd0b474b64bb0ab8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "end-4",
+        "repo": "dots-hyprland",
+        "rev": "2f2a376fdb2ad738bf55f693dd0b474b64bb0ab8",
+        "type": "github"
+      }
+    },
+    "end4-pC": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1792788754,
+        "narHash": "sha256-YswnJURzeSca839gsijUdwR+kDS8rkQFTdh29aP8Mos=",
+        "owner": "pctrade",
+        "repo": "end4-pC",
+        "rev": "cacaf5049dec31e023f2d39b24e22ce908ee9c56",
+        "type": "github"
+      },
+      "original": {
+        "owner": "pctrade",
+        "repo": "end4-pC",
+        "rev": "cacaf5049dec31e023f2d39b24e22ce908ee9c56",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -39,6 +73,8 @@
     },
     "root": {
       "inputs": {
+        "dots-hyprland": "dots-hyprland",
+        "end4-pC": "end4-pC",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs"
       }

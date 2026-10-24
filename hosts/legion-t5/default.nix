@@ -24,5 +24,8 @@
 
   networking.hostName = "legion-t5";
 
+  # 默认桌面：Hyprland + end4-pC；Plasma 保留为备用会话
+  my.hyprland.enable = true;
+
   system.stateVersion = "26.05";
 }

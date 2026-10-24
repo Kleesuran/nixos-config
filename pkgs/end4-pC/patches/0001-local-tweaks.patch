@@ -1,0 +1,283 @@
+diff --git a/modules/common/Config.qml b/modules/common/Config.qml
+index 98b95c7..b044e01 100644
+--- a/modules/common/Config.qml
++++ b/modules/common/Config.qml
+@@ -544,11 +544,13 @@ Singleton {
+                     property bool alwaysShowSwap: false
+                     property bool alwaysShowCpu: true
+                     property bool alwaysShowCpuTemp: false
++                    property bool alwaysShowGpu: true
+                     property bool alwaysShowDisk: false
+                     property bool alwaysShowRam: true
+                     property int memoryWarningThreshold: 95
+                     property int swapWarningThreshold: 85
+                     property int cpuWarningThreshold: 90
++                    property int gpuWarningThreshold: 90
+                 }
+ 
+                 property JsonObject aiUsage: JsonObject {
+@@ -744,7 +746,7 @@ Singleton {
+                 property bool showMedia: true
+                 property bool showToolbars: true
+                 property JsonObject blur: JsonObject {
+-                    property bool enable: true
++                    property bool enable: false
+                     property real radius: 100
+                     property real extraZoom: 1.1
+                     property int size: 20
+diff --git a/modules/ii/bar/Resources.qml b/modules/ii/bar/Resources.qml
+index f7a3a62..38f9666 100644
+--- a/modules/ii/bar/Resources.qml
++++ b/modules/ii/bar/Resources.qml
+@@ -38,6 +38,15 @@ BarWidgetSwitcherArea {
+                 Layout.leftMargin: shown ? 6 : 0
+                 warningThreshold: Config.options.bar.resources.cpuWarningThreshold
+             }
++            Resource {
++                contentColor: root.contentColor
++                contentColorOverridden: root.contentColorOverridden
++                iconName: "developer_board"
++                shown: Config.options.bar.resources.alwaysShowGpu ?? true
++                percentage: ResourceUsage.gpuUsage
++                Layout.leftMargin: shown ? 6 : 0
++                warningThreshold: Config.options.bar.resources.gpuWarningThreshold ?? 90
++            }
+             Resource {
+                 contentColor: root.contentColor
+                 contentColorOverridden: root.contentColorOverridden
+@@ -91,6 +100,15 @@ BarWidgetSwitcherArea {
+                 Layout.leftMargin: shown ? 6 : 0
+                 warningThreshold: Config.options.bar.resources.cpuWarningThreshold
+             }
++            Resource {
++                contentColor: root.contentColor
++                contentColorOverridden: root.contentColorOverridden
++                iconName: "developer_board"
++                shown: Config.options.bar.resources.alwaysShowGpu ?? true
++                percentage: ResourceUsage.gpuUsage
++                Layout.leftMargin: shown ? 6 : 0
++                warningThreshold: Config.options.bar.resources.gpuWarningThreshold ?? 90
++            }
+             Resource {
+                 contentColor: root.contentColor
+                 contentColorOverridden: root.contentColorOverridden
+@@ -147,6 +165,16 @@ BarWidgetSwitcherArea {
+                 percentage: ResourceUsage.cpuUsage
+                 warningThreshold: Config.options.bar.resources.cpuWarningThreshold
+             }
++            Resource {
++                contentColor: root.contentColor
++                contentColorOverridden: root.contentColorOverridden
++                Layout.alignment: Qt.AlignHCenter
++                iconName: "developer_board"
++                vertical: true
++                visible: Config.options.bar.resources.alwaysShowGpu ?? true
++                percentage: ResourceUsage.gpuUsage
++                warningThreshold: Config.options.bar.resources.gpuWarningThreshold ?? 90
++            }
+             Resource {
+                 contentColor: root.contentColor
+                 contentColorOverridden: root.contentColorOverridden
+@@ -206,6 +234,16 @@ BarWidgetSwitcherArea {
+                 percentage: ResourceUsage.cpuUsage
+                 warningThreshold: Config.options.bar.resources.cpuWarningThreshold
+             }
++            Resource {
++                contentColor: root.contentColor
++                contentColorOverridden: root.contentColorOverridden
++                Layout.alignment: Qt.AlignHCenter
++                iconName: "developer_board"
++                vertical: true
++                visible: Config.options.bar.resources.alwaysShowGpu ?? true
++                percentage: ResourceUsage.gpuUsage
++                warningThreshold: Config.options.bar.resources.gpuWarningThreshold ?? 90
++            }
+             Resource {
+                 contentColor: root.contentColor
+                 contentColorOverridden: root.contentColorOverridden
+diff --git a/modules/ii/bar/ResourcesPopup.qml b/modules/ii/bar/ResourcesPopup.qml
+index 05ef605..508e874 100644
+--- a/modules/ii/bar/ResourcesPopup.qml
++++ b/modules/ii/bar/ResourcesPopup.qml
+@@ -35,6 +35,19 @@ StyledPopup {
+                     : ResourceUsage.cpuTemp > 60 ? Appearance.m3colors.m3tertiary
+                     : Appearance.colors.colOnLayer1
+             }
++
++            ResourceCard {
++                label: "GPU"
++                iconText: "developer_board"
++                iconShape: MaterialShape.Shape.Cookie9Sided
++                value: ResourceUsage.gpuUsage
++                sublabel: ResourceUsage.gpuMemoryTotal > 0
++                    ? `${Math.round(ResourceUsage.gpuTemp)}°C | ${(ResourceUsage.gpuMemoryUsed / 1024).toFixed(1)} / ${(ResourceUsage.gpuMemoryTotal / 1024).toFixed(1)} GB`
++                    : `${Math.round(ResourceUsage.gpuTemp)}°C`
++                sublabelColor: ResourceUsage.gpuTemp > 80 ? Appearance.colors.colError
++                    : ResourceUsage.gpuTemp > 60 ? Appearance.m3colors.m3tertiary
++                    : Appearance.colors.colOnLayer1
++            }
+         }
+ 
+         Column {
+diff --git a/modules/ii/bar/SystemIcons.qml b/modules/ii/bar/SystemIcons.qml
+index c0cfefd..b77aa1b 100644
+--- a/modules/ii/bar/SystemIcons.qml
++++ b/modules/ii/bar/SystemIcons.qml
+@@ -28,6 +28,12 @@ Item {
+         onPressed: {
+             GlobalStates.sidebarRightOpen = !GlobalStates.sidebarRightOpen;
+         }
++        onWheel: event => {
++            if (event.angleDelta.y > 0)
++                Audio.incrementVolume();
++            else if (event.angleDelta.y < 0)
++                Audio.decrementVolume();
++        }
+     }
+ 
+     Flow {
+diff --git a/modules/ii/bar/UpdatesCount.qml b/modules/ii/bar/UpdatesCount.qml
+index efbdf7d..c333805 100644
+--- a/modules/ii/bar/UpdatesCount.qml
++++ b/modules/ii/bar/UpdatesCount.qml
+@@ -45,7 +45,7 @@ MouseArea {
+         command: [
+             "kitty", "--hold",
+             "fish", "-i", "-l", "-c",
+-            "yay -Syu --combinedupgrade=false"
++            "sudo nixos-rebuild switch --flake /mnt/repos/nixos-config#legion-t5"
+         ]
+         onExited: (exitCode, exitStatus) => {
+             Updates.refresh()
+diff --git a/scripts/keyring/unlock.sh b/scripts/keyring/unlock.sh
+index 30509aa..094c8ed 100755
+--- a/scripts/keyring/unlock.sh
++++ b/scripts/keyring/unlock.sh
+@@ -15,9 +15,13 @@ if [[ -z "${UNLOCK_PASSWORD}" ]]; then
+ fi
+ 
+ # Unlock
+-killall -q -u "$(whoami)" gnome-keyring-daemon
+-eval $(echo -n "${UNLOCK_PASSWORD}" \
+-           | gnome-keyring-daemon --daemonize --login \
+-           | sed -e 's/^/export /')
++if command -v kwalletd6 &>/dev/null; then
++    kwalletd6 2>/dev/null &
++elif command -v gnome-keyring-daemon &>/dev/null; then
++    killall -q -u "$(whoami)" gnome-keyring-daemon
++    eval $(echo -n "${UNLOCK_PASSWORD}" \
++               | gnome-keyring-daemon --daemonize --login \
++               | sed -e 's/^/export /')
++fi
+ unset UNLOCK_PASSWORD
+ echo '' >&2
+diff --git a/services/DotsUpdater.qml b/services/DotsUpdater.qml
+index 7046ff0..4548a87 100644
+--- a/services/DotsUpdater.qml
++++ b/services/DotsUpdater.qml
+@@ -11,32 +11,17 @@ Singleton {
+         Quickshell.execDetached([
+             "kitty", "--hold",
+             "fish", "-i", "-l", "-c",
+-            "yay -Syu --combinedupgrade=false"
++            "sudo nixos-rebuild switch --flake /mnt/repos/nixos-config#legion-t5"
+         ])
+         Qt.callLater(() => GlobalStates.settingsOpen = false)
+     }
+ 
+     function runUpdateDots() {
+-        const updateScript = `
+-            set -e
+-            DIR="$HOME/.config/quickshell"
+-
+-            rm -rf "$DIR/end4-pC-tmp"
+-            git clone https://github.com/pctrade/end4-pC.git "$DIR/end4-pC-tmp"
+-
+-            rm -rf "$DIR/end4-pC-old"
+-            [ -d "$DIR/end4-pC" ] && mv "$DIR/end4-pC" "$DIR/end4-pC-old"
+-            mv "$DIR/end4-pC-tmp" "$DIR/end4-pC"
+-
+-            killall qs 2>/dev/null || true
+-            sleep 0.5
+-            setsid qs -c end4-pC >/tmp/qs.log 2>&1 < /dev/null &
+-            disown
+-
+-            rm -rf "$DIR/end4-pC-old"
+-        `
+-
+-        Quickshell.execDetached(["kitty", "--hold", "bash", "-c", updateScript])
++        Quickshell.execDetached([
++            "notify-send",
++            "end4-pC 由 nix-config 管理",
++            "请在 /mnt/repos/nixos-config 更新 flake input 后执行 nixos-rebuild switch"
++        ])
+         Qt.callLater(() => GlobalStates.settingsOpen = false)
+     }
+ }
+diff --git a/services/ResourceUsage.qml b/services/ResourceUsage.qml
+index c150d3c..151f8ba 100644
+--- a/services/ResourceUsage.qml
++++ b/services/ResourceUsage.qml
+@@ -44,6 +44,13 @@ Singleton {
+ 
+     property string thermalPath: ""
+ 
++    property real gpuUsage: 0
++    property real gpuTemp: 0
++    property real gpuMemoryUsed: 0
++    property real gpuMemoryTotal: 0
++    property real gpuMemoryUsedPercentage: gpuMemoryTotal > 0 ? gpuMemoryUsed / gpuMemoryTotal : 0
++    property list<real> gpuUsageHistory: []
++
+     Process {
+         id: findThermalPathProc
+         running: true
+@@ -102,6 +109,21 @@ Singleton {
+         }
+     }
+ 
++    Process {
++        id: gpuProc
++        command: ["bash", "-c", "if command -v nvidia-smi &>/dev/null; then nvidia-smi --query-gpu=utilization.gpu,temperature.gpu,memory.used,memory.total --format=csv,noheader,nounits 2>/dev/null; elif [ -f /sys/class/drm/card0/device/gpu_busy_percent ]; then usage=$(cat /sys/class/drm/card0/device/gpu_busy_percent 2>/dev/null || echo 0); temp=$(cat /sys/class/drm/card0/device/hwmon/hwmon*/temp1_input 2>/dev/null | head -1 | awk '{print int($1/1000)}'); echo \"${usage}, ${temp:-0}, 0, 0\"; else echo '0, 0, 0, 0'; fi"]
++        stdout: StdioCollector {
++            onStreamFinished: {
++                const parts = text.trim().split(",").map(s => parseFloat(s.trim()))
++                if (parts.length >= 4) {
++                    root.gpuUsage = isNaN(parts[0]) ? 0 : parts[0] / 100
++                    root.gpuTemp  = isNaN(parts[1]) ? 0 : parts[1]
++                    root.gpuMemoryUsed  = isNaN(parts[2]) ? 0 : parts[2]
++                    root.gpuMemoryTotal = isNaN(parts[3]) ? 0 : parts[3]
++                }
++            }
++        }
++    }
+     function kbToGbString(kb) {
+         return (kb / (1024 * 1024)).toFixed(1) + " GB"
+     }
+@@ -122,11 +144,16 @@ Singleton {
+         diskUsageHistory = [...diskUsageHistory, diskUsedPercentage]
+         if (diskUsageHistory.length > historyLength) diskUsageHistory.shift()
+     }
++    function updateGpuUsageHistory() {
++        gpuUsageHistory = [...gpuUsageHistory, gpuUsage]
++        if (gpuUsageHistory.length > historyLength) gpuUsageHistory.shift()
++    }
+     function updateHistories() {
+         updateMemoryUsageHistory()
+         updateSwapUsageHistory()
+         updateCpuUsageHistory()
+         updateDiskUsageHistory()
++        updateGpuUsageHistory()
+     }
+ 
+     Timer {
+@@ -154,6 +181,9 @@ Singleton {
+             }
+             root.diskTick++
+ 
++            gpuProc.running = false
++            gpuProc.running = true
++
+             const textMeminfo = fileMeminfo.text()
+             memoryTotal = Number(textMeminfo.match(/MemTotal: *(\d+)/)?.[1] ?? 1)
+             memoryFree  = Number(textMeminfo.match(/MemAvailable: *(\d+)/)?.[1] ?? 0)
