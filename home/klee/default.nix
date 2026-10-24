@@ -26,6 +26,7 @@
     antigravity-cli
     codebuddy
     codex
+    deepseek-harness
     google-cloud-sdk
     grok-build
     nfpm

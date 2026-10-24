@@ -9,6 +9,7 @@
     # 基础
     git
     gh
+    gh-dash
     curl
     wget
     ripgrep
