@@ -1,4 +1,4 @@
-# 游戏：Steam 库复用 /mnt/steam，Proton 由 Steam 自行下载
+# 游戏：Steam 库路径由 Steam 自己记录（本机是 /mnt/steam），Proton 由 Steam 自行下载
 { pkgs, ... }:
 
 {
