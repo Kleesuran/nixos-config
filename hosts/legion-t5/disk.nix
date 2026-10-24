@@ -119,7 +119,7 @@ in
     };
 
     # 2011 年的 WD5003ABYX，SATA 链路已降级到 1.5Gbps，读写偶发命令超时。
-    # 这里只做「少给压力 + 按需挂载」；硬件层的链路/NCQ 调整见 modules/hardware/storage.nix。
+    # 这里只做「少给压力 + 按需挂载」；硬件层的链路/NCQ 调整见 hosts/legion-t5/storage.nix。
     "/mnt/HDD" = {
       device = "/dev/disk/by-uuid/1F3368C53EC749BF";
       fsType = "ntfs3";

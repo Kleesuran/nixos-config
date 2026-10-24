@@ -8,6 +8,12 @@
     ./disk.nix
     ./boot.nix
 
+    # 本机专属硬件策略：CPU/GPU/这块老盘/唤醒源
+    ./cpu-amd.nix
+    ./gpu-nvidia.nix
+    ./storage.nix
+    ./wakeup.nix
+
     ../../modules/core
     ../../modules/hardware
     ../../modules/desktop

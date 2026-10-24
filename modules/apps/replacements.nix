@@ -14,6 +14,12 @@
     zedg
   ];
 
+  # LocalSend：组播发现 + 传输，端口属于应用而不是主机
+  networking.firewall = {
+    allowedTCPPorts = [ 53317 ];
+    allowedUDPPorts = [ 53317 ];
+  };
+
   hardware.openrazer.enable = true;
   hardware.openrazer.users = [ "klee" ];
   hardware.openrazer.packages.kernel = config.boot.kernelPackages.openrazer.overrideAttrs (old: {

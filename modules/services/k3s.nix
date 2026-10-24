@@ -12,5 +12,11 @@
 
   environment.systemPackages = [ config.services.k3s.package ];
 
-  networking.firewall.allowedTCPPorts = [ 6443 ];
+  networking.firewall = {
+    allowedTCPPorts = [ 6443 ];
+    trustedInterfaces = [
+      "cni0"
+      "flannel.1"
+    ];
+  };
 }

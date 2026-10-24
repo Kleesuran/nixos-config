@@ -1,4 +1,7 @@
-# 网络：NetworkManager（iwd 后端）+ firewalld 的替代 nftables
+# 网络：NetworkManager（iwd 后端）+ 防火墙
+#
+# 这里只保留所有主机都成立的设置。具体端口由需要它的服务自己开：
+# k3s（6443 + cni 接口）、mihomo（7890/8080）、LocalSend（53317）。
 { lib, ... }:
 
 {
@@ -10,22 +13,7 @@
 
     wireless.iwd.enable = true;
 
-    firewall = {
-      enable = true;
-      allowedTCPPorts = [
-        6443 # k3s API
-        53317 # LocalSend（传输）
-        7890 # mihomo mixed-port
-        8080 # 可选 LAN 代理
-      ];
-      allowedUDPPorts = [
-        53317 # LocalSend（组播发现 + 传输）
-      ];
-      trustedInterfaces = [
-        "cni0"
-        "flannel.1"
-      ];
-    };
+    firewall.enable = true;
   };
 
   # iwd 与 NM 都需要 DHCP，交给 NM

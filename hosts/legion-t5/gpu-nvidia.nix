@@ -63,6 +63,10 @@ in
 
   environment.systemPackages = [
     pkgs.nvtopPackages.nvidia
+    # vainfo：KDE「系统信息 / 关于本机」的图形页要用，也是 VA-API 排障工具。
+    # 放在 systemPackages 而不是 graphics.extraPackages —— 后者只建
+    # /run/opengl-driver 的驱动目录，不往 PATH 里放可执行文件。
+    pkgs.libva-utils
     # 覆盖驱动自带的 nvidia-smi（同路径冲突时优先使用本包）
     (lib.hiPrio nvidiaSmiFixed)
   ];

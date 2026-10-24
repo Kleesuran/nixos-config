@@ -7,6 +7,4 @@
     "amd_iommu=on"
     "iommu=pt"
   ];
-
-  services.power-profiles-daemon.enable = true;
 }

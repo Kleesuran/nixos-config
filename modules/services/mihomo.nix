@@ -44,6 +44,12 @@
     };
   };
 
+  # mixed-port 与可选 LAN 代理端口随服务一起开放
+  networking.firewall.allowedTCPPorts = [
+    7890
+    8080
+  ];
+
   boot.kernel.sysctl = {
     "net.ipv4.ip_forward" = 1;
     "net.ipv6.conf.all.forwarding" = 1;
