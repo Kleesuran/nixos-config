@@ -1,40 +1,14 @@
-# Secure Boot：复用 Arch 上的 sbctl 密钥（/var/lib/sbctl/keys）
+# Secure Boot：复用 sbctl 密钥（/var/lib/sbctl/keys）重签引导器与内核
 #
 # 每次 grub-install 之后自动重签，否则 grub 升级会把引导器变成未签名状态，
 # 下次重启直接进不了系统。
-{ pkgs, ... }:
+#
+# 这里只做通用重签；定制 GRUB core 与主板 DSDT 属于主机事实，在 hosts/<name>/。
+# ESP 路径取自 boot.loader.efi.efiSysMountPoint，不写死 /efi。
+{ config, pkgs, ... }:
 
 let
-  # 从原 Arch 定制 GRUB 里取出的、去掉了 lockdown 注册的 acpi 模块，
-  # 与 stock GRUB 2.14 模块重新打包成这个 core。详见 firmware/grub-custom/README.md。
-  customGrub = ../../firmware/grub-custom/core.efi;
-
-  installCustomGrub = pkgs.writeShellScript "install-custom-grub" ''
-    set -eu
-
-    dst=/efi/EFI/NixOS-efi/grubx64.efi
-    key=/var/lib/sbctl/keys/db/db.key
-    cert=/var/lib/sbctl/keys/db/db.pem
-
-    [ -d /efi/EFI ] || { echo "/efi 未挂载，跳过自定义 GRUB"; exit 0; }
-
-    tmp="$dst.tmp"
-    ${pkgs.coreutils}/bin/install -Dm644 ${customGrub} "$tmp"
-
-    if [ ! -f "$key" ]; then
-      echo "sbctl 密钥不存在，保留 stock GRUB"
-      ${pkgs.coreutils}/bin/rm -f "$tmp"
-      exit 0
-    fi
-
-    # 先签临时文件并验证，成功后才替换，避免把未签名/损坏的核心写到 ESP
-    ${pkgs.sbsigntool}/bin/sbsign --key "$key" --cert "$cert" \
-      --output "$tmp.signed" "$tmp"
-    ${pkgs.sbsigntool}/bin/sbverify --cert "$cert" "$tmp.signed" >/dev/null
-    ${pkgs.coreutils}/bin/mv "$tmp.signed" "$dst"
-    ${pkgs.coreutils}/bin/rm -f "$tmp"
-    echo "installed custom GRUB: $dst"
-  '';
+  esp = config.boot.loader.efi.efiSysMountPoint;
 
   signGrub = pkgs.writeShellScript "sign-grub" ''
     set -eu
@@ -44,7 +18,7 @@ let
 
     [ -f "$key" ] || { echo "sbctl 密钥不存在，跳过签名"; exit 0; }
 
-    for f in /efi/EFI/NixOS*/grubx64.efi /efi/EFI/nixos*/grubx64.efi /efi/EFI/BOOT/BOOTX64.EFI; do
+    for f in ${esp}/EFI/NixOS*/grubx64.efi ${esp}/EFI/nixos*/grubx64.efi ${esp}/EFI/BOOT/BOOTX64.EFI; do
       [ -f "$f" ] || continue
 
       # 已由本密钥签过就跳过，避免反复追加签名
@@ -87,19 +61,9 @@ let
 in
 {
   boot.loader.grub.extraInstallCommands = ''
-    ${installCustomGrub}
     ${signGrub}
     ${signKernels}
   '';
-
-  # GRUB 的 Windows 条目从 ESP 根目录读取 acpi 表
-  system.activationScripts.dsdt = {
-    text = ''
-      if [ -d /efi ]; then
-        ${pkgs.coreutils}/bin/install -Dm644 ${../../firmware/dsdt.aml} /efi/dsdt.aml
-      fi
-    '';
-  };
 
   # 兜底：开机再校验一次，防止某次 rebuild 漏签
   systemd.services.sign-grub = {
